@@ -73,6 +73,7 @@ B：下吧。我也下了。。。
 ![enter image description here](http://www.coderyi.com//qiniu/429/image/cbb39ed0e10f4a9e8cdeaeb38ebc3695.png)
 
 
+总结下相关的函数：
 
 创建套接字
 
