@@ -1,19 +1,17 @@
 # 大话Socket
 
 
-要了解Socket首先要连接TCP，他们两个的关系可以说是：
+要了解Socket首先要了解 TCP，他们两个的关系可以说是：
 
-Socket是抽象出来的使用TCP/UDP的概念模型，屏蔽掉了晦涩的底层协议的实现，是一个接口。
+Socket 是抽象出来的使用 TCP/UDP 的概念模型，屏蔽掉了晦涩的底层协议的实现，是一个接口。
 
 
-最近看到了一张如此详细的TCP三次握手和四次挥手，打印一张放工位！摘自《图解网络硬件》249页 图5-11 《TCP的三次握手》
+最近看到了一张如此详细的 TCP 三次握手和四次挥手，打印一张放工位！摘自《图解网络硬件》249页 图5-11 《TCP的三次握手》
 
 ![enter image description here](http://ww4.sinaimg.cn/large/64dfd849jw1f2udfv668pj20m00nm44c)
 
-
-
 ![《TCP三次握手图解：iOS的Socket开发基础
-http://www.coderyi.com/archives/429》](http://www.coderyi.com//qiniu/429/image/543019bab569d5cce5143f7a0c25b872.png)
+http://www.coderyi.com/archives/429》](http://ww1.sinaimg.cn/large/65e4f1e6jw1f7u2xjocatj20j80dbq46.jpg)
 
 
 所谓的`X、X+1`、`Y、Y+1`
@@ -69,8 +67,7 @@ B：下吧。我也下了。。。
 图片演示了四次挥手，与三次握手相比，只多了一个被动方确认自身任务Finish的动作。
 
 
-
-![enter image description here](http://www.coderyi.com//qiniu/429/image/cbb39ed0e10f4a9e8cdeaeb38ebc3695.png)
+![](http://ww2.sinaimg.cn/large/65e4f1e6jw1f7u2xjsgn8j20j60dktah.jpg)
 
 
 总结下相关的函数：
