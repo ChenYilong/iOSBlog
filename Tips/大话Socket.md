@@ -103,3 +103,18 @@ B：下吧。我也下了。。。
 释放套接字
 
         close(sockid)
+
+
+至于为什么是三次握手，而不是二次握手，还有四次握手，可以看看下面的类比：
+
+三次握手 | 二次握手 | 四次握手
+-------------|-------------|-------------
+![](http://ww2.sinaimg.cn/large/65e4f1e6jw1f7u56wfxhzj20yi1pc3zv.jpg)| ![](http://ww3.sinaimg.cn/large/65e4f1e6jw1f7u4zd30npj20yi1pcqad.jpg) |![](http://ww4.sinaimg.cn/large/65e4f1e6jw1f7u4xasma0j20yi1pcacb.jpg)
+
+参考：http://zhihu.com/question/24853633/answer/114872771
+
+三次握手的对话，也挺像这个的，哈哈：
+
+A: How are you?
+B: I'm fine, thanks,and you?
+A: I'm fine too.
