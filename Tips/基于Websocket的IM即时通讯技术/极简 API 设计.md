@@ -1,0 +1,102 @@
+如何降低开发者集成门槛？
+
+什么样的框架算是好用？
+
+一行代码就能达到预期效果的，就可以叫好用。
+
+ 1. 入门简单。初始化简单。
+ 2. 完善的异常处理机制
+
+ 1. 极简参数 
+ 3. 提供异常hook
+ 2. 隐藏细节
+
+极简参数：
+
+像 UIAlertView 一样，你只需要使用 title 去 init 后，然后直接调用 show 就能达到预期的效果。采用了类似的 API 设计，
+
+隐藏细节：
+
+SDWebImage 被使用最多的功能就是 TableView 图片的加载，
+
+只需要传入占位图和图片 URL 两个参数，就能完成复杂的异步加载展示。
+
+## 面向 ID 编程
+
+ 1. 底层协议：Client -- ClientID
+ 2. 上层UI：Conversation -- ConversationID
+
+ClientId:
+
+Session 对 Session，简化为 ClientId 对 ClientId，
+
+类似UIAlertVIew的是初始化你只需要传一个title，就可以。
+
+对话页面的初始化，你只需要传递一个id，对话id，即可。
+
+## 低耦合 UI API设计
+
+使用 CocoaPods 集成，在 Demo 层面能实现红包这样大粒度的自定义业务模块，
+
+效果图如下所示：
+
+![](http://ww2.sinaimg.cn/large/7853084cjw1f810z9i0z0g20qa0mqu11.gif)
+
+需要几个API：
+
+12个接口：
+
+ 自定义项 | 公开API | 备注
+ -------------|-------------|-------------
+ 自定义消息 | 2 | `-registerSubclass`、 `+classMediaType`
+ 自定义Cell | 4 | `-registerCustomMessageCell`、`+classMediaType`、`-setup`、 `-configureCellWithData:`
+ 自定义插件 | 6 | `-registerCustomInputViewPlugin`、`+classPluginType`、`-pluginIconImage`、`-pluginTitle`、`-pluginDidClicked`、`sendCustomMessageHandler`
+
+效果图：
+
+- | - | -
+-------------|-------------|-------------
+![](http://ww1.sinaimg.cn/large/7853084cjw1f7ynh6lno3j20bi0kg0ug.jpg) | ![](http://ww3.sinaimg.cn/large/7853084cjw1f7ynh6q4p8j20bi0kgdgm.jpg) | ![](http://ww3.sinaimg.cn/large/7853084cjw1f7ynh6nodqj20bi0kgdgl.jpg) 
+![](http://ww4.sinaimg.cn/large/7853084cjw1f7ynh6hcqlj20bi0kg74x.jpg) | ![](http://ww1.sinaimg.cn/large/7853084cjw1f7ynh6fj58j20bi0kgab8.jpg) | ![](http://ww1.sinaimg.cn/large/7853084cjw1f7ynh6be0lj20bi0kg75n.jpg)
+
+### 利用 Autolayout 减少接口
+
+今年微信放弃支持iOS6，紧接着各大应用也都相继放弃支持iOS7（微信那边的数据3000万的iOS7用户），业内已经约定
+最低支持系统为iOS7。
+
+### 将可自定义的参数放置到资源文件中
+
+提高可维护性：
+
+  将 plist 文件放置在 bundle 中，让 bundle 文件可以自定义，图片等多媒体资源也就同样可以自定义了。
+
+应用在：
+
+  - 自定义cell类型，
+  - 自定义Message类型
+  - 自定义输入框底部插件
+
+全部遵循这样的设计规则：
+
+ - 区别自定义类型：默认、自定义看正负 
+ - 有序的类型：比如插件位置，按照 Type 大小排序。
+ - 区分发送方：为所有cell自动注册两种
+
+做法类似：
+
+  - 安卓开发中的 style xml 
+  - 网页开发中的 css
+ 
+一个参数，多用途，比如：
+
+ - 插件类型，也同样可以做插件排序依据
+ - 自定义消息cell，类名、消息type结合，构成cell复用id。
+ - 本地化，字符串，有默认值，自定义时为空，则调整展示逻辑：比如不会显示。
+
+### 插件注册机制
+
+### 更高的封装程度
+
+自定义消息，反序列化。
+
+### 常见需求默认设置，提供开关
