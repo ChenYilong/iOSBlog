@@ -20,11 +20,31 @@
 如何确保IM系统的整体安全？因为用户的消息是个人隐私，因此要从多个层面来保证IM系统的安全性。
 
 
- [应用场景](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#应用场景) 
- [IM 发展史](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#im-发展史) 
- [大家都在使用什么技术](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#大家都在使用什么技术) 
-  [社交场景 ：ChatKit](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#社交场景-chatkit) 
+  1. [应用场景](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#应用场景) 
+    1. [IM 发展史](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#im-发展史) 
+    2. [大家都在使用什么技术](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#大家都在使用什么技术) 
+    3. [社交场景 ：ChatKit](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#社交场景-chatkit) 
+    4. [直播场景](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#直播场景) 
+    5. [数据自动更新场景](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#数据自动更新场景) 
+    6. [电梯场景（假在线状态处理）](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#电梯场景假在线状态处理) 
+  2. [技术实现细节](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#技术实现细节)  
+    1. [基于 WebSocket 的 IM 系统](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#基于-websocket-的-im-系统) 
+    2. [更多](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#更多) 
 
+  3. [性能调优 -- 针对移动网络特点的性能调优](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#性能调优----针对移动网络特点的性能调优) 
+    1. [极简协议，传输协议 Protobuf](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#极简协议传输协议-protobuf) 
+    2.  [在安全上做了哪些事情？](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#在安全上做了哪些事情) 
+      1. [防止 DNS 污染](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#防止-dns-污染) 
+      2. [防止 DDos 攻击](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#防止-ddos-攻击) 
+      3. [账户安全](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#账户安全)     
+    3. [重连机制](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#重连机制) 
+    4.  [使用 HTTP/2 减少不必要的网络连接](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#使用-http2-减少不必要的网络连接) 
+    5. [设置合理的超时时间](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#设置合理的超时时间) 
+    6. [图片视频等文件上传](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#图片视频等文件上传) 
+    7. [使用缓存：类似 Hash 的本地缓存校验](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#使用缓存类似-hash-的本地缓存校验) 
+    8. [服务健康检查-监控](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#服务健康检查-监控) 
+    [在安全上做了哪些事情？](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#在安全上做了哪些事情) 
+      
 ### 大规模即时通讯技术上的难点
 
  - 如何在移动网络环境下优化电量，流量，及长连接的健壮性？现在移动网络有2G、3G、4G各种制式，并且随时可能切换和中断，移动网络优化可以说是面向移动服务的共同问题。
@@ -243,9 +263,11 @@ LiveKit 相较社交场景的特点：
 
 Message在发送后在服务端，维护一个表，15秒内没有收到ack，就认为应用处于离线状态，然后转而进行推送。这里如果出现，重复推送，客户端要负责保证只。将 Message 消息相当于服务端发送的Ping消息，APP的 ack 作为 pong。
 
-### 基于 WebSocket 的 IM 系统
+### 技术实现细节
 
-#### WebSocket简介
+###基于 WebSocket 的 IM 系统
+
+**WebSocket简介**
 
 WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工通讯的网络技术。 WebSocket 通信协定于2011年被IETF定为标准 RFC 6455，WebSocketAPI被W3C定为标准。
 
@@ -255,7 +277,7 @@ WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工�
 
 🔵可以达到支持 iOS，Android，Web 三端同步的特性。
 
-### 技术实现细节
+### 更多
 
 **文章较长，单独成篇。**： [《技术实现细节》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/技术实现细节.md ) 
 
@@ -305,15 +327,17 @@ WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工�
 
 缺点：不能表示复杂的数据结构，但 IM 服务已经足够使用。
 
-#### 防止 DNS 污染
+#### 在安全上做了哪些事情？
+
+##### 防止 DNS 污染
 
 **文章较长，单独成篇。**： [《防 DNS 污染方案.md》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/防%20DNS%20污染方案.md ) 
 
-#### 防止 DDos 攻击
+##### 防止 DDos 攻击
 
 主要是服务端，比如可以使用一些专业的DDos防御厂商，客户端中能做的有限，主要是放置备用域名。
 
-## 在安全上做了哪些事情？
+##### 账户安全
 
 IM 服务账号密码一旦泄露，危害更加严峻。尤其是对于消息可以漫游的类型。
 
@@ -391,7 +415,7 @@ TCP 保活（TCP KeepAlive 机制）和心跳保活区别：
 
 图片性能优化
 
-#### 使用缓存：类似 Hash 的本地缓存校验
+#### 使用缓存：类似 E-Tag 的本地消息缓存校验
 
 🔵 微信是不用考虑消息同步问题，因为微信是不存储历史记录的，卸载重装消息记录就会丢失。
 
@@ -399,5 +423,4 @@ TCP 保活（TCP KeepAlive 机制）和心跳保活区别：
 
 在服务器部署一个监控程序，每个一段互发消息，如果消息终端，就触发报警。
 
-
-### 视频通话 WebRTC（待删除）
+### 视频通话 WebRTC（待续）
