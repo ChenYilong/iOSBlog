@@ -51,6 +51,12 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 这是上层（APP）提供用户信息的 Block，由于 ChatKit 并不关心业务逻辑信息，比如用户昵称，用户头像等。用户可以通过 ChatKit 单例向 ChatKit 注入一个用户信息内容提供 Block，通过这个用户信息提供 Block，ChatKit 才能够正确的进行业务逻辑数据的绘制。
 
+示意图如下：
+
+![](http://ww2.sinaimg.cn/large/801b780ajw1f8ah885yn0j20e70bw754.jpg)
+
+具体实现如下：
+
 方法定义如下：
 
  ```Objective-C
@@ -79,7 +85,6 @@ typedef void(^LCCKFetchProfilesBlock)(NSArray<NSString *> *userIds, LCCKFetchPro
 
 
 用法如下所示：
-
 
 
  ```Objective-C

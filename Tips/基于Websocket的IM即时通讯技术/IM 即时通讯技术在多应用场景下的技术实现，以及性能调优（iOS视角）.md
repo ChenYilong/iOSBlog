@@ -1,29 +1,17 @@
-又可以叫《基于 Websocket 的即时通讯技术在多场景下的实践》
-
 # IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）
 
 注：
 
   - 本文中所涉及到的所有 iOS 相关代码，均已100%开源（不存在 framework ），便于学习参考。
   - 本文侧重移动端的设计与实现，会展开讲，服务端仅仅属于概述，不展开。
-
-希望为大家在设计或优化 IM 时，提供一些参考。
+  - 为大家在设计或改造优化 IM 模块时，提供一些参考。
 
 ## 提纲
-
-如何设计出一个高可复用性的 IM 模块。
-
-即使你不使用我们做的 Lib，也同样对你在编写自己的 IM 服务中大有好处。
-
-我是如何设计 API 的，一些特殊场景我是如何实现的。
-
-如何确保IM系统的整体安全？因为用户的消息是个人隐私，因此要从多个层面来保证IM系统的安全性。
-
 
   1. [应用场景](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#应用场景) 
     1. [IM 发展史](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#im-发展史) 
     2. [大家都在使用什么技术](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#大家都在使用什么技术) 
-    3. [社交场景 ：ChatKit](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#社交场景-chatkit) 
+    3. [社交场景](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#社交场景) 
     4. [直播场景](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#直播场景) 
     5. [数据自动更新场景](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#数据自动更新场景) 
     6. [电梯场景（假在线状态处理）](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#电梯场景假在线状态处理) 
@@ -33,19 +21,20 @@
 
   3. [性能调优 -- 针对移动网络特点的性能调优](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#性能调优----针对移动网络特点的性能调优) 
     1. [极简协议，传输协议 Protobuf](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#极简协议传输协议-protobuf) 
-    2.  [在安全上做了哪些事情？](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#在安全上做了哪些事情) 
+    2.  [在安全上需要做哪些事情？](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#在安全上需要做哪些事情) 
       1. [防止 DNS 污染](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#防止-dns-污染) 
-      2. [防止 DDos 攻击](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#防止-ddos-攻击) 
-      3. [账户安全](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#账户安全)     
+      2. [账户安全](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#账户安全)     
     3. [重连机制](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#重连机制) 
     4.  [使用 HTTP/2 减少不必要的网络连接](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#使用-http2-减少不必要的网络连接) 
     5. [设置合理的超时时间](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#设置合理的超时时间) 
     6. [图片视频等文件上传](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#图片视频等文件上传) 
-    7. [使用缓存：类似 Hash 的本地缓存校验](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#使用缓存类似-hash-的本地缓存校验) 
+    7. [使用缓存：类似 E-Tag 的本地消息缓存校验](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#使用缓存类似-e-tag-的本地消息缓存校验) 
     8. [服务健康检查-监控](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#服务健康检查-监控) 
     [在安全上做了哪些事情？](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#在安全上做了哪些事情) 
       
 ### 大规模即时通讯技术上的难点
+
+思考几个问题：
 
  - 如何在移动网络环境下优化电量，流量，及长连接的健壮性？现在移动网络有2G、3G、4G各种制式，并且随时可能切换和中断，移动网络优化可以说是面向移动服务的共同问题。
  - 如何确保IM系统的整体安全？因为用户的消息是个人隐私，因此要从多个层面来保证IM系统的安全性。
@@ -89,37 +78,26 @@
 
 ![](http://ww1.sinaimg.cn/large/801b780ajw1f7xlfskdsvj21j30v2wjn.jpg)
 
-曾被 Facebook 早起版本采纳：
-
-![](http://ww1.sinaimg.cn/large/801b780ajw1f7xkvkiaiaj20j608cdga.jpg)
 
 一种轮询方式是否为长轮询，是根据服务端的处理方式来决定的，与客户端没有关系。
 
 短轮询很容易理解，那么什么叫长轮询？与短轮询有什么区别。
 
-举个例子，比如一个秒杀页面中有一个字段是库存量，而这个库存量需要实时的变化，保持和服务器里实际的库存一致。这个时候，你会怎么做？
+  长轮询和短轮询最大的区别是，短轮询去服务端查询的时候，不管服务端有没有变化，服务器就立即返回结果了。而长轮询则不是，在长轮询中，服务器如果检测到库存量没有变化的话，将会把当前请求挂起一段时间（这个时间也叫作超时时间，一般是几十秒）。在这个时间里，服务器会去检测库存量有没有变化，检测到变化就立即返回，否则就一直等到超时为止。
+曾被 Facebook 早起版本采纳：
 
-最简单的一种方式，就是你用 JS 写个轮询，不停的去请求服务器中的库存量是多少，然后刷新到这个页面当中，这其实就是所谓的短轮询。
+![](http://ww1.sinaimg.cn/large/801b780ajw1f7xkvkiaiaj20j608cdga.jpg)
 
-  长轮询和短轮询最大的区别是，短轮询去服务端查询的时候，不管库存量有没有变化，服务器就立即返回结果了。而长轮询则不是，在长轮询中，服务器如果检测到库存量没有变化的话，将会把当前请求挂起一段时间（这个时间也叫作超时时间，一般是几十秒）。在这个时间里，服务器会去检测库存量有没有变化，检测到变化就立即返回，否则就一直等到超时为止。
-
-![](http://ww4.sinaimg.cn/large/7853084cjw1f7y4ix8maaj20k00f0gmm.jpg)
-
-SSE：
-
-（在APP开发中应用少，就不讲了。功能类似 Push。）
-
-![](http://ww3.sinaimg.cn/large/801b780ajw1f7xlft5zckj21j30v2dky.jpg)
-
-HTML5 Websockets: 双向
+HTML5 WebSocket: 双向
 
 ![](http://ww4.sinaimg.cn/large/801b780ajw1f7xlftf9rzj21j30v2tee.jpg)
 
 参考： [What are Long-Polling, Websockets, Server-Sent Events (SSE) and Comet?](http://stackoverflow.com/a/12855533/3395008) 
 
-从长短轮询到长短连接，使用 WebSocket 来替代 HTTP。
 
-这几种技术的区别主要有：
+我们可以看到，发展历史是这样：从长短轮询到长短连接，使用 WebSocket 来替代 HTTP。
+
+长短轮询到长短连接的区别主要有：
 
  1. 概念范畴不同：长短轮询是应用层概念、长短连接是传输层概念
  2. 协商方式不同：一个 TCP 连接是否为长连接，是通过设置 HTTP 的 Connection Header 来决定的，而且是需要两边都设置才有效。而一种轮询方式是否为长轮询，是根据服务端的处理方式来决定的，与客户端没有关系。
@@ -127,11 +105,27 @@ HTML5 Websockets: 双向
 
 **在移动端上长连接是趋势。**
 
-**轮询与Websocket的花费的流量对比**：
+其最大的特点是节省Header。
+
+**轮询与 WebSocket 所花费的Header流量对比**：
+
+如何测试：
+
+假设Header是871字节，
+
+我们以相同的频率 10W/s 去做网络请求， 对比下轮询与 WebSocket 所花费的 Header 流量：
+
+Header 包括请求和响应头信息。
+
+出于兼容性考虑，一般建立 WebSocket 连接也采用 HTTP 请求的方式，那么从这个角度讲无论请求如何频繁，都只需要一个header。
+
+并且 Websocket 的数据传输是 frame 形式传输的,更加高效，对比轮询的2个Header，这里只有一个Header和一个frame。
+
+而 Websocket 的 Frame 仅仅用2个字节就代替了轮询的871字节！
 
  ![](http://ww1.sinaimg.cn/large/7853084cjw1f81fcbtqqqj20dz0a03z2.jpg)
 
-相同的每秒客户端轮询的次数，当次数高达10W/s的高频率次数的时候，Polling轮询需要消耗665Mbps，而Websocket仅仅只花费了1.526Mbps，将近435倍！！
+相同的每秒客户端轮询的次数，当次数高达 10W/s 的高频率次数的时候，Polling 轮询需要消耗665Mbps，而 WebSocket 仅仅只花费了1.526Mbps，将近435倍！！
 
  数据参考：
    1. [HTML5 WebSocket: A Quantum Leap in Scalability for the Web](https://www.websocket.org/quantum.html) 
@@ -141,12 +135,12 @@ HTML5 Websockets: 双向
 
 ### 大家都在使用什么技术
 
-最近做了两个 IM 相关的问卷，累计产生了800多条的投票数据：
+最近做了两个 IM 相关的问卷，累计产生了900多条的投票数据：
 
  1. [《你项目中使用什么协议实现了 IM 即时通讯》]( http://vote.weibo.com/poll/137494424) 
  2. [《IM 即时通讯中你会选用什么数据传输格式？》](http://vote.weibo.com/poll/137505291) 
 
-注：以上两次投票是发布在微博@iOS程序犭袁 ，鉴于微博的粉丝关注机制，本数据只能反映出 IM 技术在移动领域或者说是 iOS 领域的使用情况，可能并不能反映出整个IT行业的情况。
+注：本次投票是发布在[微博@iOS程序犭袁](http://weibo.com/luohanchenyilong) ，鉴于微博关注机制，本数据只能反映出 IM 技术在 iOS 领域的使用情况，并不能反映出整个IT行业的情况。
 
 下文会对这个投票结果进行下分析。
 
@@ -156,23 +150,29 @@ HTML5 Websockets: 双向
 
 投票结果  [《你项目中使用什么协议实现了 IM 即时通讯》]( http://vote.weibo.com/poll/137494424) 
 
-协议如何选择？
+**协议如何选择？**
 
 IM协议选择原则一般是：易于拓展，方便覆盖各种业务逻辑，同时又比较节约流量。后一点的需求在移动端 IM 上尤其重要。常见的协议有：XMPP、SIP、MQTT、私有协议。
+
+我们这里只关注前三名，
 
 名称 | 优点 | 缺点
 -------------|-------------|-------------
 XMPP | 优点：协议开源，可拓展性强，在各个端(包括服务器)有各种语言的实现，开发者接入方便； | 缺点：缺点也是不少，XML表现力弱、有太多冗余信息、流量大，实际使用时有大量天坑。
-SIP | SIP协议多用于VOIP相关的模块，是一种文本协议 | 文本协议这一点几乎可以断定它的流量不会小。
 MQTT | 优点：协议简单，流量少；订阅+推送模式，非常适合Uber、滴滴的小车轨迹的移动。 | 缺点：它并不是一个专门为 IM 设计的协议，多使用于推送。IM 情景要复杂得多，pub、sub，比如：加入对话、创建对话等等事件。
 私有协议 | 市面上几乎所有主流IM APP都是是使用私有协议，一个被良好设计的私有协议优点非常明显。优点：高效，节约流量(一般使用二进制协议)，安全性高，难以破解；| 缺点：在开发初期没有现有样列可以参考，对于设计者的要求比较高。
-WebSocket | web原生支持，很多第三方语言实现，可以搭配XMPP、MQTT等多种聊天协议  | -
 
-一个好的协议需要满足如下条件:高效，简洁，可读性好，节约流量，易于拓展，同时又能够匹配当前团队的技术堆栈。基于如上原则，我们可以得出: 如果团队小，团队技术在 IM 上积累不够可以考虑使用 XMPP 或者 MQTT+HTTP短连接的实现。反之可以考虑自己设计和实现私有协议。
+一个好的协议需要满足如下条件:高效，简洁，可读性好，节约流量，易于拓展，同时又能够匹配当前团队的技术堆栈。基于如上原则，我们可以得出: 如果团队小，团队技术在 IM 上积累不够可以考虑使用 XMPP 或者 MQTT+HTTP 短连接的实现。反之可以考虑自己设计和实现私有协议，这里建议团队有计划地迁移到私有协议上。
+
+这里特别提一下排名第二的 WebSocket ，区别于上面的聊天协议，这是一个传输通讯协议，那为什么会有这么多人在即时通讯领域运用了这一协议？除了上文说的长连接特性外，这个协议 web 原生支持，有很多第三方语言实现，可以搭配 XMPP、MQTT 等多种聊天协议进行使用，被广泛地应用于即时通讯领。
 
 #### 社交场景
 
-我们专门为社交场景开发的开源组件：ChatKit，star数，1000+。
+最大的特点在于：模式成熟，界面类似。
+
+我们专门为社交场景开发的开源组件：ChatKit-OC，star数，1000+。
+
+ChatKit-OC 在协议选择上使用的是 WebSocket 搭配私有聊天协议的方式，在数据传输上选择的是 Protobuf 搭配 JSON 的方式。
 
 项目地址：[ChatKit-OC]( https://github.com/leancloud/ChatKit-OC ) 
 
@@ -182,9 +182,11 @@ WebSocket | web原生支持，很多第三方语言实现，可以搭配XMPP、M
 
 #### 直播场景
 
-一个演示如何为直播集成IM的开源直播Demo：
+一个演示如何为直播集成 IM 的开源直播 Demo：
 
  项目地址：[LiveKit-iOS](https://github.com/leancloud/LeanCloudLiveKit-iOS) 
+
+（这个库，我最近也在优化，打算做成 Lib，支持下 CocoaPods 。希望能帮助大家快速集成直播模块。有兴趣的也欢迎参与进来提PR）
 
 LiveKit 相较社交场景的特点：
 
@@ -208,32 +210,28 @@ LiveKit 相较社交场景的特点：
 
 #### 电梯场景（假在线状态处理）
 
-使用 APNs 来作聊天
-
  iOS端的假在线的状态，有两种方案：
  
-  - iOS端只走APNs
   - 双向ping pong机制
- 
+  - iOS端只走APNs
+
+双向 ping-pong 机制：
+
+Message 在发送后，在服务端维护一个表，一段时间内，比如15秒内没有收到 ack，就认为应用处于离线状态，先将用户踢下线，然后转而进行推送。这里如果出现，重复推送，客户端要负责去重。将 Message 消息相当于服务端发送的Ping消息，APP的 ack 作为 pong。
+
+![](http://ww4.sinaimg.cn/large/006y8lVajw1f873a0br78j30ac0bsgmb.jpg)
+
 使用 APNs 来作聊天的优缺点：
 
   优点：
   
    - 解决了，iOS端假在线的问题。
-   - 消息的字节数限制影响更小
-  
 
- APNs新闻一栏
-
-时间 | 新闻 | 参考文档
--------------|-------------|-------------
-2014年6月 | 2014年6月份WWDC搭载iOS8及以上系统的iOS设备，能够接收的最大playload大小提升到2KB。低于iOS8的设备以及OS X设备维持256字节。 | [**What's New in Notifications - WWDC 2014 - Session 713 - iOS**]( https://developer.apple.com/videos/play/wwdc2014/713/)  ![enter image description here](http://i.stack.imgur.com/UW3ex.png)
-2015年6月 | 2015年6月份WWDC宣布将在不久的将来发布 “基于 HTTP/2 的全新 APNs 协议”，并在大会上发布了仅仅支持测试证书的版本。| [**What's New in Notifications - WWDC 2015 - Session 720 - iOS, OS X**]( https://developer.apple.com/videos/play/wwdc2015/720/ )  ![enter image description here](http://i63.tinypic.com/2cy2ka0.jpg)
-2015年12月17日 | 2015年12月17日起，发布 “基于 HTTP/2 的全新 APNs 协议”,iOS 系统以及 OS X 系统，统一将最大 playload 大小提升到4KB。  | [**Apple Push Notification Service Update 12-17 2015**]( https://developer.apple.com/news/?id=12172015b )
- 
   缺点：（APNs的缺点）
 
-   - 无法保证消息的及时性。无法保证准确性。
+   - 无法保证消息的及时性。
+   - 让服务端负载过重
+   
    APNs不保证消息的到达率，消息会被折叠： 
 
 你可能见过这种推送消息：
@@ -248,20 +246,17 @@ LiveKit 相较社交场景的特点：
 
 为什么这么设计？APNs的存储-转发能力太弱，大量的消息存储和转发将消耗 Apple 服务器的资源，可能是出于存储成本考虑，也可能是因为 Apple 转发能力太弱。总之结果就是 APNs 从来不保证消息的达到率。并且设备上线之后也不会向服务器上传信息。
 
-现在SDK的提供商依然无法保证，消息推到了 APNs，APNs能推到 App 那里。
+现在我们可以保证消息一定能推送到 APNs 那里，但是 APNs 不保证帮我们把消息投递给用户。
 
 即使搭配了这样的策略：每次收到推送就拉历史记录的消息，一旦消息被 APNs 丢弃，这条消息可能会在几天之后受到了新推送后才被查询到。
 
-   - 对服务端的负载要求高
-    APNs的实现原理导致了：必须每次收到消息后，拉取历史消息。
+让服务端负载过重：
+
+APNs 的实现原理决定了：必须每次收到消息后，拉取历史消息。
 
 参考：[《基于HTTP2的全新APNs协议》](https://github.com/ChenYilong/iOS9AdaptationTips/blob/master/基于HTTP2的全新APNs协议/基于HTTP2的全新APNs协议.md) 
 
-结论：如果面向的目标用户对消息的及时性并不敏感，可以采用这种方案。比如社交场景。（情侣间APP，毫秒级别的应用，就算了）
-
-还有另一种方法：
-
-Message在发送后在服务端，维护一个表，15秒内没有收到ack，就认为应用处于离线状态，然后转而进行推送。这里如果出现，重复推送，客户端要负责保证只。将 Message 消息相当于服务端发送的Ping消息，APP的 ack 作为 pong。
+结论：如果面向的目标用户对消息的及时性并不敏感，可以采用这种方案。比如社交场景。（比如：专门为情侣间使用的APP。。。）
 
 ### 技术实现细节
 
@@ -273,9 +268,7 @@ WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工�
 
 在 WebSocket API中，浏览器和服务器只需要要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。两者之间就直接可以数据互相传送。
 
-🔵只从RFC发布的时间看来，WebSocket要晚近很多，HTTP 1.1是1999年，WebSocket则是12年之后了。WebSocket协议的开篇就说，本协议的目的是为了解决基于浏览器的程序需要拉取资源时必须发起多个HTTP请求和长时间的轮训的问题而创建的。
-
-🔵可以达到支持 iOS，Android，Web 三端同步的特性。
+只从RFC发布的时间看来，WebSocket要晚近很多，HTTP 1.1是1999年，WebSocket则是12年之后了。WebSocket协议的开篇就说，本协议的目的是为了解决基于浏览器的程序需要拉取资源时必须发起多个HTTP请求和长时间的轮训的问题而创建的。可以达到支持 iOS，Android，Web 三端同步的特性。
 
 ### 更多
 
@@ -285,37 +278,52 @@ WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工�
 
 #### 极简协议，传输协议 Protobuf
 
+  1. 极简协议，传输协议 Protobuf
+  2. 在安全上做了哪些事情？
+    1. 防止 DNS 污染
+    2. 账户安全
+  3. 重连机制
+  4. 使用 HTTP/2 减少不必要的网络连接
+  5. 设置合理的超时时间
+  6. 图片视频等文件上传
+  7. 使用缓存：类似 Hash 的本地缓存校验
+
 ![](http://ww1.sinaimg.cn/large/801b780ajw1f7xgu9y7yaj20fa0ejdh7.jpg)
 
 ![](http://ww4.sinaimg.cn/large/801b780ajw1f7xhowj9n2j20h30gzmz9.jpg)
 
 [《IM 即时通讯中你会选用什么数据传输格式？》](http://vote.weibo.com/poll/137505291) 
  
-注：本次投票是发布在微博@iOS程序犭袁 ，鉴于微博关注机制，本数据只能反映出IM技术在 iOS 领域的使用情况，并不能反映出整个IT行业的情况。
+注：本次投票是发布在[微博@iOS程序犭袁](http://weibo.com/luohanchenyilong) ，鉴于微博关注机制，本数据只能反映出 IM 技术在 iOS 领域的使用情况，并不能反映出整个IT行业的情况。
 
 使用 ProtocolBuffer 减少 Payload
 
-🔵微信也同样使用的 Protobuf 协议，定制后的。
+微信也同样使用的 Protobuf 协议，定制后的。
 
  - 测试是省了70%；
  - 滴滴打车40%；
  - 携程是采用新的Protocol Buffer数据格式+Gzip压缩后的Payload大小降低了15%-45%。数据序列化耗时下降了80%-90%。
 
 采用高效安全的私有协议，支持长连接的复用，稳定省电省流量
-
- 1. 【安全】高效安全，采用完全私有的二进制协议：确保数据加密安全
- 2. 【省流量】流量消耗极少，省流量。🔵一条消息数据用Protobuf序列化后的大小是 JSON 的1/10、XML格式的1/20、是二进制序列化的1/10。同 XML 相比， Protobuf 性能优势明显。它以高效的二进制方式存储，比 XML 小 3 到 10 倍，快 20 到 100 倍。
+ 
+ 1. 【高效】提高网络请求成功率，消息体越大，失败几率越大。
+ 2. 【省流量】流量消耗极少，省流量。一条消息数据用Protobuf序列化后的大小是 JSON 的1/10、XML格式的1/20、是二进制序列化的1/10。同 XML 相比， Protobuf 性能优势明显。它以高效的二进制方式存储，比 XML 小 3 到 10 倍，快 20 到 100 倍。
  3. 【省电】省电
  4. 【高效心跳包】同时心跳包协议对IM的电量和流量影响很大，对心跳包协议上进行了极简设计：仅 1 Byte 。
  5. 【易于使用】开发人员通过按照一定的语法定义结构化的消息格式，然后送给命令行工具，工具将自动生成相关的类，可以支持java、c++、python、Objective-C等语言环境。通过将这些类包含在项目中，可以很轻松的调用相关方法来完成业务消息的序列化与反序列化工作。语言支持：原生支持c++、java、python、Objective-C等多达10余种语言。 2015-08-27 Protocol Buffers v3.0.0-beta-1中发布了Objective-C(Alpha)版本， 两个月前，2016-07-28 3.0 Protocol Buffers v3.0.0正式版发布，正式支持 Objective-C。
- 6. 微信和手机QQ这样的主流IM应用也早已在使用它
- 7. 提高网络请求成功率，消息体越大，失败几率越大。
+ 6. 【可靠】微信和手机QQ这样的主流IM应用也早已在使用它
 
 ![](http://ww1.sinaimg.cn/large/801b780ajw1f7xg2zq7iwj20rk0tpjz6.jpg)
 
 高性能，序列化、反序列化、创建综合性能高。
 
-发序列化 | 序列化 | 字节长度
+如何测试：
+
+对数据分别操作100次，1000次，10000次和100000次进行了测试，
+
+纵坐标是完成时间，单位是毫秒，
+
+反序列化 | 序列化 | 字节长度
 -------------|-------------|-------------
 ![](http://ww2.sinaimg.cn/large/65e4f1e6jw1f822vsywt6j20fb097t9b.jpg)|![](http://ww4.sinaimg.cn/large/65e4f1e6jw1f822vt0izwj20fb0970te.jpg) |![](http://ww4.sinaimg.cn/large/65e4f1e6jw1f822vt6ajij20fb0970tc.jpg)
 
@@ -327,19 +335,20 @@ WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工�
 
 缺点：不能表示复杂的数据结构，但 IM 服务已经足够使用。
 
-#### 在安全上做了哪些事情？
+另外一个，可能会造成 APP 的包体积增大，通过 Google 提供的脚本生成的 Model，会非常“庞大”，Model一多，包体积也就会跟着变大。
+但在我们SDK中只使用了一个Model，所以这个问题并不明显。
+
+#### 在安全上需要做哪些事情？
 
 ##### 防止 DNS 污染
 
 **文章较长，单独成篇。**： [《防 DNS 污染方案.md》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/防%20DNS%20污染方案.md ) 
 
-##### 防止 DDos 攻击
-
-主要是服务端，比如可以使用一些专业的DDos防御厂商，客户端中能做的有限，主要是放置备用域名。
-
 ##### 账户安全
 
 IM 服务账号密码一旦泄露，危害更加严峻。尤其是对于消息可以漫游的类型。
+
+介绍下我们是如何做到，即使是我们的服务器被攻破，你的用户系统依然
 
 ![](http://ww1.sinaimg.cn/large/7853084cjw1f7yo8csb6bj20ou0idq4d.jpg)
 
@@ -347,12 +356,8 @@ IM 服务账号密码一旦泄露，危害更加严峻。尤其是对于消息�
 
   无侵入的权限控制：
   与用户的用户帐号体系完全隔离，只需要提供一个ID就可以通信，接入方可以对该 ID 进行 MD5 加密后再进行传输和存储，保证开发者用户数据的私密性及安全。
- 
-  2. 数据传输安全：
 
-  包括：使用二进制通讯协议；
-
-  3. 签名机制
+  2. 签名机制
 
   对关键操作，支持第三方服务器鉴权，保护你的信息安全。
 
@@ -360,7 +365,7 @@ IM 服务账号密码一旦泄露，危害更加严峻。尤其是对于消息�
 
   参考： [《实时通信服务总览-权限和认证》]( https://leancloud.cn/docs/realtime_v2.html#权限和认证 ) 
  
-  4. 单点登录
+  3. 单点登录
   
 #### 重连机制
 
@@ -372,6 +377,8 @@ IM 服务账号密码一旦泄露，危害更加严峻。尤其是对于消息�
 这样灵活的策略也同样决定了，只能在 APP 层进行心跳ping。
 
 ![enter image description here](http://www.52im.net/data/attachment/forum/201609/06/152639a88oc4ohnuwp89ny.jpg)
+
+这里有必要提一下重连机制的必要性，我们知道TCP也有保活机制，但这个与我们在这里讨论的“心跳保活”机制是有区别的。
 
 TCP 保活（TCP KeepAlive 机制）和心跳保活区别：
  
@@ -394,7 +401,7 @@ TCP 保活（TCP KeepAlive 机制）和心跳保活区别：
 
 使用 HTTP/2 就可以达到这样的目的。
 
- > HTTP/2 是 HTTP 协议发布后的首个更新，🔵于2015年2月17日被批准。它采用了一系列优化技术来整体提升 HTTP 协议的传输性能，如异步连接复用、头压缩等等，可谓是当前互联网应用开发中，网络层次架构优化的首选方案之一。
+ > HTTP/2 是 HTTP 协议发布后的首个更新，于2015年2月17日被批准。它采用了一系列优化技术来整体提升 HTTP 协议的传输性能，如异步连接复用、头压缩等等，可谓是当前互联网应用开发中，网络层次架构优化的首选方案之一。
 
  HTTP/2 也以高复用著称，而且如果我们要使用 HTTP/2，那么在网络库的选择上必然要使用 NSURLSession。所以 AFN2.x 也需要升级到AFN3.x.
 
@@ -404,23 +411,20 @@ TCP 保活（TCP KeepAlive 机制）和心跳保活区别：
 
 #### 图片视频等文件上传
 
-图片格式优化在业界已有成熟的方案，例如Facebook使用的WebP图片格式，已经被国内众多App使用。
+图片格式优化在业界已有成熟的方案，例如 Facebook 使用的 WebP 图片格式，已经被国内众多 App 使用。
 
 分片上传、断点续传、秒传技术、
 
  - 文件分块上传:因为移动网络丢包严重，将文件分块上传可以使得一个分组包含合理数量的TCP包，使得重试概率下降，重试代价变小，更容易上传到服务器；
- - 提供文件秒传的方式:服务器根据MD5进行文件去重；
+ - 提供文件秒传的方式:服务器根据MD5、SHA进行文件去重；
  - 支持断点续传。
  - 上传失败，合理的重连，比如3次。
 
-图片性能优化
+#### 使用缓存
 
-#### 使用缓存：类似 E-Tag 的本地消息缓存校验
+微信是不用考虑消息同步问题，因为微信是不存储历史记录的，卸载重装消息记录就会丢失。
 
-🔵 微信是不用考虑消息同步问题，因为微信是不存储历史记录的，卸载重装消息记录就会丢失。
+所以我们可以采用一个类似 E-Tag、Last-Modified 的本地消息缓存校验机制，具体做法就是，当我们想加载最近10条的聊天记录时，先将本地缓存的最近10条做一个 hash 值，将 hash 值发送给服务端，服务端将服务端的最近十条做一个 hash ，如果一致就返回304。最理想的情况是服务端一直返回304，一直加载本地记录。这样做的好处：
 
-#### 服务健康检查-监控
-
-在服务器部署一个监控程序，每个一段互发消息，如果消息终端，就触发报警。
-
-### 视频通话 WebRTC（待续）
+ - 消息同步
+ - 节省流量
