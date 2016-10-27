@@ -428,3 +428,10 @@ TCP 保活（TCP KeepAlive 机制）和心跳保活区别：
 
  - 消息同步
  - 节省流量
+
+----------
+
+
+Posted by [微博@iOS程序犭袁](http://weibo.com/luohanchenyilong/)  
+原创文章，版权声明：自由转载-非商用-非衍生-保持署名 | [Creative Commons BY-NC-ND 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh)
+<p align="center"><a href="http://weibo.com/u/1692391497?s=6uyXnP" target="_blank"><img border="0" src="http://service.t.sina.com.cn/widget/qmd/1692391497/b46c844b/1.png"/></a></a>
