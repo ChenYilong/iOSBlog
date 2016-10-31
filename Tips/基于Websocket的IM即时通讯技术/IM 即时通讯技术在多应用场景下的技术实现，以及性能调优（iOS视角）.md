@@ -1,10 +1,22 @@
 # IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）
 
+2016年9月份[我](https://github.com/ChenYilong)参加了 MDCC2016（中国移动开发者大会），
+
+![2016年9月份我参加了 MDCC2016（中国移动开发者大会）](http://ww2.sinaimg.cn/large/006tNbRwjw1f9bkx4tiuqj30qo0zk0vd.jpg)
+
+在 MDCC2016 上我做了关于 IM 相关分享，会上因为有50分钟的时间限制 ，所以有很多东西都没有展开，这篇是演讲稿的博文版本，比会上讲得更为详细。有些演讲时一笔带过的部分，在文中就可以展开讲讲。
+
+![图为我正在演讲](http://ww4.sinaimg.cn/large/006tNbRwjw1f9bkx4u3oqj30qo0zkq4h.jpg)
+
 注：
 
-  - 本文中所涉及到的所有 iOS 相关代码，均已100%开源（不存在 framework ），便于学习参考。
+  - 本文中所涉及到的所有 iOS 端相关代码，均已100%开源（不存在 framework ），便于学习参考。
   - 本文侧重移动端的设计与实现，会展开讲，服务端仅仅属于概述，不展开。
   - 为大家在设计或改造优化 IM 模块时，提供一些参考。
+
+我现在任职于 [LeanCloud（原名 `AVOS` ）](https://leancloud.cn/?source=T6M35E4H) 。LeanCloud 是国内较早提供 IM 服务飞 Paas 厂商，提供 IM 相关的 SDK 供开发者使用，现在采纳我们 IM 方案的 APP 有：知乎Live、掌上链家、懂球帝等等，在 IM 方面也积累了一些经验，这次就在这篇博文分享下。
+
+![采纳了我们IM方案和推送方案的APP](http://ww1.sinaimg.cn/large/006tNbRwjw1f9blvbrujhj30mb0i6tav.jpg)
 
 ## 提纲
 
@@ -31,7 +43,7 @@
     7. [使用缓存：类似 E-Tag 的本地消息缓存校验](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#使用缓存类似-e-tag-的本地消息缓存校验) 
     8. [服务健康检查-监控](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#服务健康检查-监控) 
     [在安全上做了哪些事情？](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#在安全上做了哪些事情) 
-      
+
 ### 大规模即时通讯技术上的难点
 
 思考几个问题：
@@ -84,7 +96,8 @@
 短轮询很容易理解，那么什么叫长轮询？与短轮询有什么区别。
 
   长轮询和短轮询最大的区别是，短轮询去服务端查询的时候，不管服务端有没有变化，服务器就立即返回结果了。而长轮询则不是，在长轮询中，服务器如果检测到库存量没有变化的话，将会把当前请求挂起一段时间（这个时间也叫作超时时间，一般是几十秒）。在这个时间里，服务器会去检测库存量有没有变化，检测到变化就立即返回，否则就一直等到超时为止。
-曾被 Facebook 早起版本采纳：
+  
+长轮询曾被 Facebook 早起版本采纳：
 
 ![](http://ww1.sinaimg.cn/large/801b780ajw1f7xkvkiaiaj20j608cdga.jpg)
 
@@ -105,21 +118,21 @@ HTML5 WebSocket: 双向
 
 **在移动端上长连接是趋势。**
 
-其最大的特点是节省Header。
+其最大的特点是节省 Header。
 
 **轮询与 WebSocket 所花费的Header流量对比**：
 
 如何测试：
 
-假设Header是871字节，
+假设 Header 是871字节，
 
 我们以相同的频率 10W/s 去做网络请求， 对比下轮询与 WebSocket 所花费的 Header 流量：
 
 Header 包括请求和响应头信息。
 
-出于兼容性考虑，一般建立 WebSocket 连接也采用 HTTP 请求的方式，那么从这个角度讲无论请求如何频繁，都只需要一个header。
+出于兼容性考虑，一般建立 WebSocket 连接也采用 HTTP 请求的方式，那么从这个角度讲无论请求如何频繁，都只需要一个 Header。
 
-并且 Websocket 的数据传输是 frame 形式传输的,更加高效，对比轮询的2个Header，这里只有一个Header和一个frame。
+并且 Websocket 的数据传输是 frame 形式传输的，帧传输更加高效，对比轮询的2个 Header，这里只有一个 Header 和一个 frame。
 
 而 Websocket 的 Frame 仅仅用2个字节就代替了轮询的871字节！
 
@@ -128,6 +141,7 @@ Header 包括请求和响应头信息。
 相同的每秒客户端轮询的次数，当次数高达 10W/s 的高频率次数的时候，Polling 轮询需要消耗665Mbps，而 WebSocket 仅仅只花费了1.526Mbps，将近435倍！！
 
  数据参考：
+ 
    1. [HTML5 WebSocket: A Quantum Leap in Scalability for the Web](https://www.websocket.org/quantum.html) 
    2. [《微信,QQ这类IM app怎么做——谈谈Websocket》]( http://www.jianshu.com/p/bcefda55bce4 ) 
  
@@ -152,7 +166,7 @@ Header 包括请求和响应头信息。
 
 **协议如何选择？**
 
-IM协议选择原则一般是：易于拓展，方便覆盖各种业务逻辑，同时又比较节约流量。后一点的需求在移动端 IM 上尤其重要。常见的协议有：XMPP、SIP、MQTT、私有协议。
+IM 协议选择原则一般是：易于拓展，方便覆盖各种业务逻辑，同时又比较节约流量。后一点的需求在移动端 IM 上尤其重要。常见的协议有：XMPP、SIP、MQTT、私有协议。
 
 我们这里只关注前三名，
 
@@ -186,7 +200,7 @@ ChatKit-OC 在协议选择上使用的是 WebSocket 搭配私有聊天协议的�
 
  项目地址：[LiveKit-iOS](https://github.com/leancloud/LeanCloudLiveKit-iOS) 
 
-（这个库，我最近也在优化，打算做成 Lib，支持下 CocoaPods 。希望能帮助大家快速集成直播模块。有兴趣的也欢迎参与进来提PR）
+（这个库，我最近也在优化，打算做成 Lib，支持下 CocoaPods 。希望能帮助大家快速集成直播模块。有兴趣的也欢迎参与进来提 PR）
 
 LiveKit 相较社交场景的特点：
 
@@ -202,7 +216,7 @@ LiveKit 相较社交场景的特点：
 
 #### 数据自动更新场景
 
- - 打车应用场景（Uber、滴滴等APP移动小车）
+ - 打车应用场景（Uber、滴滴等 APP 首页的移动小车）
  - 朋友圈状态的实施更新，朋友圈自己发送的消息无需刷新，自动更新
  
 这些场景比聊天要简单许多，仅仅涉及到监听对象的订阅、取消订阅。
@@ -217,7 +231,7 @@ LiveKit 相较社交场景的特点：
 
 双向 ping-pong 机制：
 
-Message 在发送后，在服务端维护一个表，一段时间内，比如15秒内没有收到 ack，就认为应用处于离线状态，先将用户踢下线，然后转而进行推送。这里如果出现，重复推送，客户端要负责去重。将 Message 消息相当于服务端发送的Ping消息，APP的 ack 作为 pong。
+Message 在发送后，在服务端维护一个表，一段时间内，比如15秒内没有收到 ack，就认为应用处于离线状态，先将用户踢下线，然后转而进行推送。这里如果出现，重复推送，客户端要负责去重。将 Message 消息相当于服务端发送的 Ping 消息，APP 的 ack 作为 pong。
 
 ![](http://ww4.sinaimg.cn/large/006y8lVajw1f873a0br78j30ac0bsgmb.jpg)
 
@@ -242,7 +256,7 @@ Message 在发送后，在服务端维护一个表，一段时间内，比如15�
 
 当 APNs 向你发送了4条推送，但是你的设备网络状况不好，在 APNs 那里下线了，这时 APNs 到你的手机的链路上有4条任务堆积，APNs 的处理方式是，只保留最后一条消息推送给你，然后告知你推送数。那么其他三条消息呢？会被APNs丢弃。
 
-有一些 App 的 IM 功能没有维持长连接，是完全通过推送来实现到，通常情况下，这些 App 也已经考虑到了这种丢推送的情况，这些 App 的做法都是，每次收到推送之后，然后向自己的服务器查询当前用户的未读消息。但是APNs也同样无法保证这四条推送能至少有一条到达你的 App。很遗憾的告诉这些App，这次的更新对你们所遭受对这些坑，没有改善。
+有一些 App 的 IM 功能没有维持长连接，是完全通过推送来实现的，通常情况下，这些 App 也已经考虑到了这种丢推送的情况，这些 App 的做法都是，每次收到推送之后，然后向自己的服务器查询当前用户的未读消息。但是 APNs 也同样无法保证这四条推送能至少有一条到达你的 App。
 
 为什么这么设计？APNs的存储-转发能力太弱，大量的消息存储和转发将消耗 Apple 服务器的资源，可能是出于存储成本考虑，也可能是因为 Apple 转发能力太弱。总之结果就是 APNs 从来不保证消息的达到率。并且设备上线之后也不会向服务器上传信息。
 
@@ -252,7 +266,7 @@ Message 在发送后，在服务端维护一个表，一段时间内，比如15�
 
 让服务端负载过重：
 
-APNs 的实现原理决定了：必须每次收到消息后，拉取历史消息。
+APNs 的实现原理决定了：必须每次收到消息后，拉取历史消息。这意味着你无法控制 APP 请求服务端的频率，同一时间十万、百万的请求量都是可能的，这带来的负载以及风险，有时甚至会比轮询还要大。
 
 参考：[《基于HTTP2的全新APNs协议》](https://github.com/ChenYilong/iOS9AdaptationTips/blob/master/基于HTTP2的全新APNs协议/基于HTTP2的全新APNs协议.md) 
 
@@ -264,11 +278,11 @@ APNs 的实现原理决定了：必须每次收到消息后，拉取历史消息
 
 **WebSocket简介**
 
-WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工通讯的网络技术。 WebSocket 通信协定于2011年被IETF定为标准 RFC 6455，WebSocketAPI被W3C定为标准。
+WebSocket 是 HTML5 开始提供的一种浏览器与服务器间进行全双工通讯的网络技术。 WebSocket 通信协定于2011年被 IETF 定为标准 RFC 6455，WebSocket API 被 W3C 定为标准。
 
-在 WebSocket API中，浏览器和服务器只需要要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。两者之间就直接可以数据互相传送。
+在 WebSocket API 中，浏览器和服务器只需要要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。两者之间就直接可以数据互相传送。
 
-只从RFC发布的时间看来，WebSocket要晚很多，HTTP 1.1是1999年，WebSocket则是12年之后了。WebSocket协议的开篇就说，本协议的目的是为了解决基于浏览器的程序需要拉取资源时必须发起多个HTTP请求和长时间的轮训的问题而创建的。可以达到支持 iOS，Android，Web 三端同步的特性。
+只从 RFC 发布的时间看来，WebSocket要晚很多，HTTP 1.1是1999年，WebSocket 则是12年之后了。WebSocket 协议的开篇就说，本协议的目的是为了解决基于浏览器的程序需要拉取资源时必须发起多个HTTP请求和长时间的轮训的问题而创建的。可以达到支持 iOS，Android，Web 三端同步的特性。
 
 ### 更多
 
@@ -286,7 +300,7 @@ WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工�
   4. 使用 HTTP/2 减少不必要的网络连接
   5. 设置合理的超时时间
   6. 图片视频等文件上传
-  7. 使用缓存：类似 Hash 的本地缓存校验
+  7. 使用缓存：基于 Hash 的本地缓存校验
 
 ![](http://ww1.sinaimg.cn/large/801b780ajw1f7xgu9y7yaj20fa0ejdh7.jpg)
 
@@ -298,7 +312,7 @@ WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工�
 
 使用 ProtocolBuffer 减少 Payload
 
-微信也同样使用的 Protobuf 协议，定制后的。
+微信也同样使用的 Protobuf 协议（经过改造的）。
 
  - 测试是省了70%；
  - 滴滴打车40%；
@@ -311,7 +325,7 @@ WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工�
  3. 【省电】省电
  4. 【高效心跳包】同时心跳包协议对IM的电量和流量影响很大，对心跳包协议上进行了极简设计：仅 1 Byte 。
  5. 【易于使用】开发人员通过按照一定的语法定义结构化的消息格式，然后送给命令行工具，工具将自动生成相关的类，可以支持java、c++、python、Objective-C等语言环境。通过将这些类包含在项目中，可以很轻松的调用相关方法来完成业务消息的序列化与反序列化工作。语言支持：原生支持c++、java、python、Objective-C等多达10余种语言。 2015-08-27 Protocol Buffers v3.0.0-beta-1中发布了Objective-C(Alpha)版本， 两个月前，2016-07-28 3.0 Protocol Buffers v3.0.0正式版发布，正式支持 Objective-C。
- 6. 【可靠】微信和手机QQ这样的主流IM应用也早已在使用它
+ 6. 【可靠】微信和手机 QQ 这样的主流 IM 应用也早已在使用它
 
 ![](http://ww1.sinaimg.cn/large/801b780ajw1f7xg2zq7iwj20rk0tpjz6.jpg)
 
@@ -327,16 +341,19 @@ WebSocket 是HTML5开始提供的一种浏览器与服务器间进行全双工�
 -------------|-------------|-------------
 ![](http://ww2.sinaimg.cn/large/65e4f1e6jw1f822vsywt6j20fb097t9b.jpg)|![](http://ww4.sinaimg.cn/large/65e4f1e6jw1f822vt0izwj20fb0970te.jpg) |![](http://ww4.sinaimg.cn/large/65e4f1e6jw1f822vt6ajij20fb0970tc.jpg)
 
-数据来源：http://www.cnblogs.com/beyondbit/p/4778264.html
+ [数据来源](http://www.cnblogs.com/beyondbit/p/4778264.html)。
 
 ![](http://ww4.sinaimg.cn/large/801b780ajw1f7x13q6dnrj20fg0a70tj.jpg)
 
  数据来自：项目 [thrift-protobuf-compare]( https://github.com/eishay/jvm-serializers/wiki )，测试项为 Total Time，也就是 指一个对象操作的整个时间，包括创建对象，将对象序列化为内存中的字节序列，然后再反序列化的整个过程。从测试结果可以看到 Protobuf 的成绩很好.
 
-缺点：不能表示复杂的数据结构，但 IM 服务已经足够使用。
+缺点：
 
-另外一个，可能会造成 APP 的包体积增大，通过 Google 提供的脚本生成的 Model，会非常“庞大”，Model一多，包体积也就会跟着变大。
-但在我们SDK中只使用了一个Model，所以这个问题并不明显。
+可能会造成 APP 的包体积增大，通过 Google 提供的脚本生成的 Model，会非常“庞大”，Model 一多，包体积也就会跟着变大。
+
+如果 Model 过多，可能导致 APP 打包后的体积骤增，但 IM 服务所使用的 Model 非常少，比如在 ChatKit-OC 中只用到了一个 Model，对包体积的影响微乎其微。
+
+在使用过程中要合理地权衡包体积以及传输效率的问题，据说去哪儿网，就曾经为了减少包体积，进而减少了 Protobuf 的使用。
 
 #### 在安全上需要做哪些事情？
 
@@ -363,18 +380,20 @@ IM 服务账号密码一旦泄露，危害更加严峻。尤其是对于消息�
 
   ![](http://ww4.sinaimg.cn/large/65e4f1e6jw1f81l13ayvsj20je0am3zk.jpg)
 
-  参考： [《实时通信服务总览-权限和认证》]( https://leancloud.cn/docs/realtime_v2.html#权限和认证 ) 
+  参考： [《实时通信服务总览-权限和认证》](https://leancloud.cn/docs/realtime_v2.html#权限和认证 ) 
  
   3. 单点登录
-  
+    
+  让 APP 支持单点登录，能有限减少盗号造成的安全问题。在 ChatKit-OC 中，我们就默认开启了单点登录功能，以此来提升 APP 的安全性。
+
 #### 重连机制
 
  - 精简心跳包，保证一个心跳包大小在10字节之内；
  - 减少心跳次数：心跳包只在空闲时发送；从收到的最后一个指令包进行心跳包周期计时而不是固定时间。
  - 重连冷却
-  2的指数级增长2、4、8，消息往来也算作心跳。类似于 iPhone 密码的 错误机制，冷却单位是5分钟，10次输错，清除数据。
+  2的指数级增长2、4、8，消息往来也算作心跳。类似于 iPhone 密码的 错误机制，冷却单位是5分钟，依次是5分钟后、10分钟后、15分钟后，10次输错，清除数据。
 
-这样灵活的策略也同样决定了，只能在 APP 层进行心跳ping。
+当然，这样灵活的策略也同样决定了，只能在 APP 层进行心跳ping。
 
 ![enter image description here](http://www.52im.net/data/attachment/forum/201609/06/152639a88oc4ohnuwp89ny.jpg)
 
@@ -395,7 +414,7 @@ TCP 保活（TCP KeepAlive 机制）和心跳保活区别：
 
 #### 使用 HTTP/2 减少不必要的网络连接
 
-大多数的移动网络(3G)并不允许一个给定IP地址超过两个的并发 HTTP 请求，既当你有两个针对同一个地址的连接时，再发起的第三个连接总是会超时。而2G网络下这个限定为1个。同一时间发起过多的网络请求不仅不会起到加速的效果，反而有副作用。
+大多数的移动网络(3G)并不允许一个给定 IP 地址超过两个的并发 HTTP 请求，既当你有两个针对同一个地址的连接时，再发起的第三个连接总是会超时。而2G网络下这个限定为1个。同一时间发起过多的网络请求不仅不会起到加速的效果，反而有副作用。
 
 另一方面，由于网络连接很是费时，保持和共享某一条连接就是一个不错的选择：比如短时间内多次的HTTP请求。
 
@@ -420,7 +439,7 @@ TCP 保活（TCP KeepAlive 机制）和心跳保活区别：
  - 支持断点续传。
  - 上传失败，合理的重连，比如3次。
 
-#### 使用缓存
+#### 使用缓存：基于 Hash 的本地缓存校验
 
 微信是不用考虑消息同步问题，因为微信是不存储历史记录的，卸载重装消息记录就会丢失。
 
@@ -430,7 +449,6 @@ TCP 保活（TCP KeepAlive 机制）和心跳保活区别：
  - 节省流量
 
 ----------
-
 
 Posted by [微博@iOS程序犭袁](http://weibo.com/luohanchenyilong/)  
 原创文章，版权声明：自由转载-非商用-非衍生-保持署名 | [Creative Commons BY-NC-ND 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh)
