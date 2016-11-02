@@ -16,7 +16,7 @@
   - 本文侧重移动端的设计与实现，会展开讲，服务端仅仅属于概述，不展开。
   - 为大家在设计或改造优化 IM 模块时，提供一些参考。
 
-我现在任职于 [LeanCloud（原名 `AVOS` ）](https://leancloud.cn/?source=T6M35E4H) 。LeanCloud 是国内较早提供 IM 服务飞 Paas 厂商，提供 IM 相关的 SDK 供开发者使用，现在采纳我们 IM 方案的 APP 有：知乎Live、掌上链家、懂球帝等等，在 IM 方面也积累了一些经验，这次就在这篇博文分享下。
+我现在任职于 [LeanCloud（原名 `AVOS` ）](https://leancloud.cn/?source=T6M35E4H) 。LeanCloud 是国内较早提供 IM 服务的 Paas 厂商，提供 IM 相关的 SDK 供开发者使用，现在采纳我们 IM 方案的 APP 有：知乎Live、掌上链家、懂球帝等等，在 IM 方面也积累了一些经验，这次就在这篇博文分享下。
 
 ![采纳了我们IM方案和推送方案的APP](http://ww1.sinaimg.cn/large/006tNbRwjw1f9blvbrujhj30mb0i6tav.jpg)
 
@@ -53,9 +53,7 @@ IM 系列文章分为下面这几篇：
     4.  [使用 HTTP/2 减少不必要的网络连接](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#使用-http2-减少不必要的网络连接) 
     5. [设置合理的超时时间](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#设置合理的超时时间) 
     6. [图片视频等文件上传](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#图片视频等文件上传) 
-    7. [使用缓存：类似 E-Tag 的本地消息缓存校验](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#使用缓存类似-e-tag-的本地消息缓存校验) 
-    8. [服务健康检查-监控](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#服务健康检查-监控) 
-    [在安全上做了哪些事情？](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#在安全上做了哪些事情) 
+    7. [使用缓存：基于 Hash 的本地缓存校验](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md#使用缓存基于-hash-的本地缓存校验) 
 
 ### 大规模即时通讯技术上的难点
 
@@ -91,15 +89,15 @@ IM 系列文章分为下面这几篇：
 
 挑一些代表性的技术做下介绍：
 
-一般的网络请求：一问一答
+**一般的网络请求：一问一答**
 
 ![](http://ww2.sinaimg.cn/large/801b780ajw1f7xlgk8724j214a0b640n.jpg)
 
-轮询：频繁的一问一答。
+**轮询：频繁的一问一答**
 
 ![](http://ww4.sinaimg.cn/large/801b780ajw1f7xlfsuqyfj21j30v27a3.jpg)
 
-长轮询：耐心地一问一答
+**长轮询：耐心地一问一答**
 
 ![](http://ww1.sinaimg.cn/large/801b780ajw1f7xlfskdsvj21j30v2wjn.jpg)
 
@@ -108,13 +106,21 @@ IM 系列文章分为下面这几篇：
 
 短轮询很容易理解，那么什么叫长轮询？与短轮询有什么区别。
 
-  长轮询和短轮询最大的区别是，短轮询去服务端查询的时候，不管服务端有没有变化，服务器就立即返回结果了。而长轮询则不是，在长轮询中，服务器如果检测到库存量没有变化的话，将会把当前请求挂起一段时间（这个时间也叫作超时时间，一般是几十秒）。在这个时间里，服务器会去检测库存量有没有变化，检测到变化就立即返回，否则就一直等到超时为止。
+举个例子：
+
+比如中秋节我们要做一个秒杀月饼的页面，要求我们要实时地展示剩余的月饼数量，也就是库存量。这时候如果要求你只能用短轮询或长轮询去做，怎么做呢？
+
+![](http://ww4.sinaimg.cn/large/006tNbRwjw1f9e0nlkxvmj30fi0f93zs.jpg)
+
+  长轮询和短轮询最大的区别是，短轮询去服务端查询的时候，不管服务端有没有变化，服务器就立即返回结果了。而长轮询则不是，在长轮询中，服务器如果检测到库存量没有变化的话，将会把当前请求挂起一段时间（这个时间也叫作超时时间，一般是几十秒）。在这个时间里，服务器会去检测库存量有没有变化，检测到变化就立即返回，否则就一直等到超时为止，这就是区别。
   
-长轮询曾被 Facebook 早起版本采纳：
+  （实际开发中不会使用长短轮询来做这种需求，这里仅仅是为了说明两者区别而做的一个例子。）
+  
+长轮询曾被 Facebook 早起版本采纳，示意图如下：
 
 ![](http://ww1.sinaimg.cn/large/801b780ajw1f7xkvkiaiaj20j608cdga.jpg)
 
-HTML5 WebSocket: 双向
+**HTML5 WebSocket: 双向**
 
 ![](http://ww4.sinaimg.cn/large/801b780ajw1f7xlftf9rzj21j30v2tee.jpg)
 
@@ -135,7 +141,7 @@ HTML5 WebSocket: 双向
 
 **轮询与 WebSocket 所花费的Header流量对比**：
 
-如何测试：
+让我们来作一个测试：
 
 假设 Header 是871字节，
 
@@ -143,11 +149,11 @@ HTML5 WebSocket: 双向
 
 Header 包括请求和响应头信息。
 
-出于兼容性考虑，一般建立 WebSocket 连接也采用 HTTP 请求的方式，那么从这个角度讲无论请求如何频繁，都只需要一个 Header。
+出于兼容性考虑，一般建立 WebSocket 连接也采用 HTTP 请求的方式，那么从这个角度讲：无论请求如何频繁，都只需要一个 Header。
 
 并且 Websocket 的数据传输是 frame 形式传输的，帧传输更加高效，对比轮询的2个 Header，这里只有一个 Header 和一个 frame。
 
-而 Websocket 的 Frame 仅仅用2个字节就代替了轮询的871字节！
+而 Websocket 的frame 仅仅用2个字节就代替了轮询的871字节！
 
  ![](http://ww1.sinaimg.cn/large/7853084cjw1f81fcbtqqqj20dz0a03z2.jpg)
 
