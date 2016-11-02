@@ -289,7 +289,7 @@ APNs 的实现原理决定了：必须每次收到消息后，拉取历史消息
 
 参考：[《基于HTTP2的全新APNs协议》](https://github.com/ChenYilong/iOS9AdaptationTips/blob/master/基于HTTP2的全新APNs协议/基于HTTP2的全新APNs协议.md) 
 
-结论：如果面向的目标用户对消息的及时性并不敏感，可以采用这种方案。比如社交场景。（比如：专门为情侣间使用的APP。。。）
+结论：如果面向的目标用户对消息的及时性并不敏感，可以采用这种方案。比如社交场景。（对消息较为敏感的APP则并不适合，比如：专门为情侣间使用的APP。。。）
 
 ### 技术实现细节
 
@@ -307,9 +307,14 @@ WebSocket 是 HTML5 开始提供的一种浏览器与服务器间进行全双工
 
 **文章较长，单独成篇。**： [《技术实现细节》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/技术实现细节.md ) 
 
+
+下面是文章的第二部分：
+
 ### 性能调优 -- 针对移动网络特点的性能调优
 
 #### 极简协议，传输协议 Protobuf
+
+目录如下：
 
   1. 极简协议，传输协议 Protobuf
   2. 在安全上做了哪些事情？
@@ -321,6 +326,13 @@ WebSocket 是 HTML5 开始提供的一种浏览器与服务器间进行全双工
   6. 图片视频等文件上传
   7. 使用缓存：基于 Hash 的本地缓存校验
 
+
+首先让我们来看下：
+
+**IM 即时通讯中你会选用什么数据传输格式？**
+
+之前做的调研数据如下：
+
 ![](http://ww1.sinaimg.cn/large/801b780ajw1f7xgu9y7yaj20fa0ejdh7.jpg)
 
 ![](http://ww4.sinaimg.cn/large/801b780ajw1f7xhowj9n2j20h30gzmz9.jpg)
@@ -329,28 +341,29 @@ WebSocket 是 HTML5 开始提供的一种浏览器与服务器间进行全双工
  
 注：本次投票是发布在[微博@iOS程序犭袁](http://weibo.com/luohanchenyilong) ，鉴于微博关注机制，本数据只能反映出 IM 技术在 iOS 领域的使用情况，并不能反映出整个IT行业的情况。
 
-使用 ProtocolBuffer 减少 Payload
+排名前三的分别的JSON 、ProtocolBuffer、XML；
 
-微信也同样使用的 Protobuf 协议（经过改造的）。
+这里重点推荐下 ProtocolBuffer：
 
- - 测试是省了70%；
+ 该协议已经在业内有很多应用，并且效果显著：
+
+**使用 ProtocolBuffer 减少 Payload**
+
  - 滴滴打车40%；
- - 携程是采用新的Protocol Buffer数据格式+Gzip压缩后的Payload大小降低了15%-45%。数据序列化耗时下降了80%-90%。
+ - 携程之前分享过，说是采用新的Protocol Buffer数据格式+Gzip压缩后的Payload大小降低了15%-45%。数据序列化耗时下降了80%-90%。
 
 采用高效安全的私有协议，支持长连接的复用，稳定省电省流量
  
- 1. 【高效】提高网络请求成功率，消息体越大，失败几率越大。
+ 1. 【高效】提高网络请求成功率，消息体越大，失败几率随之增加。
  2. 【省流量】流量消耗极少，省流量。一条消息数据用Protobuf序列化后的大小是 JSON 的1/10、XML格式的1/20、是二进制序列化的1/10。同 XML 相比， Protobuf 性能优势明显。它以高效的二进制方式存储，比 XML 小 3 到 10 倍，快 20 到 100 倍。
  3. 【省电】省电
  4. 【高效心跳包】同时心跳包协议对IM的电量和流量影响很大，对心跳包协议上进行了极简设计：仅 1 Byte 。
- 5. 【易于使用】开发人员通过按照一定的语法定义结构化的消息格式，然后送给命令行工具，工具将自动生成相关的类，可以支持java、c++、python、Objective-C等语言环境。通过将这些类包含在项目中，可以很轻松的调用相关方法来完成业务消息的序列化与反序列化工作。语言支持：原生支持c++、java、python、Objective-C等多达10余种语言。 2015-08-27 Protocol Buffers v3.0.0-beta-1中发布了Objective-C(Alpha)版本， 两个月前，2016-07-28 3.0 Protocol Buffers v3.0.0正式版发布，正式支持 Objective-C。
- 6. 【可靠】微信和手机 QQ 这样的主流 IM 应用也早已在使用它
+ 5. 【易于使用】开发人员通过按照一定的语法定义结构化的消息格式，然后送给命令行工具，工具将自动生成相关的类，可以支持java、c++、python、Objective-C等语言环境。通过将这些类包含在项目中，可以很轻松的调用相关方法来完成业务消息的序列化与反序列化工作。语言支持：原生支持c++、java、python、Objective-C等多达10余种语言。 2015-08-27 Protocol Buffers v3.0.0-beta-1中发布了Objective-C(Alpha)版本， 2016-07-28 3.0 Protocol Buffers v3.0.0正式版发布，正式支持 Objective-C。
+ 6. 【可靠】微信和手机 QQ 这样的主流 IM 应用也早已在使用它（采用的是改造过的Protobuf协议）
 
 ![](http://ww1.sinaimg.cn/large/801b780ajw1f7xg2zq7iwj20rk0tpjz6.jpg)
 
-高性能，序列化、反序列化、创建综合性能高。
-
-如何测试：
+如何测试验证 Protobuf 的高性能？
 
 对数据分别操作100次，1000次，10000次和100000次进行了测试，
 
@@ -370,7 +383,7 @@ WebSocket 是 HTML5 开始提供的一种浏览器与服务器间进行全双工
 
 可能会造成 APP 的包体积增大，通过 Google 提供的脚本生成的 Model，会非常“庞大”，Model 一多，包体积也就会跟着变大。
 
-如果 Model 过多，可能导致 APP 打包后的体积骤增，但 IM 服务所使用的 Model 非常少，比如在 ChatKit-OC 中只用到了一个 Model，对包体积的影响微乎其微。
+如果 Model 过多，可能导致 APP 打包后的体积骤增，但 IM 服务所使用的 Model 非常少，比如在 ChatKit-OC 中只用到了一个 Protobuf 的 Model：Message对象，对包体积的影响微乎其微。
 
 在使用过程中要合理地权衡包体积以及传输效率的问题，据说去哪儿网，就曾经为了减少包体积，进而减少了 Protobuf 的使用。
 
@@ -382,11 +395,10 @@ WebSocket 是 HTML5 开始提供的一种浏览器与服务器间进行全双工
 
 ##### 账户安全
 
-IM 服务账号密码一旦泄露，危害更加严峻。尤其是对于消息可以漫游的类型。
-
-介绍下我们是如何做到，即使是我们的服务器被攻破，你的用户系统依然
-
+IM 服务账号密码一旦泄露，危害更加严峻。尤其是对于消息可以漫游的类型。比如：
 ![](http://ww1.sinaimg.cn/large/7853084cjw1f7yo8csb6bj20ou0idq4d.jpg)
+
+介绍下我们是如何做到，即使是我们的服务器被攻破，你的用户系统依然不会受到影响：
 
   1. 帐号安全：
 
@@ -416,7 +428,7 @@ IM 服务账号密码一旦泄露，危害更加严峻。尤其是对于消息�
 
 ![enter image description here](http://www.52im.net/data/attachment/forum/201609/06/152639a88oc4ohnuwp89ny.jpg)
 
-这里有必要提一下重连机制的必要性，我们知道TCP也有保活机制，但这个与我们在这里讨论的“心跳保活”机制是有区别的。
+这里有必要提一下重连机制的必要性，我们知道 TCP 也有保活机制，但这个与我们在这里讨论的“心跳保活”机制是有区别的。
 
 TCP 保活（TCP KeepAlive 机制）和心跳保活区别：
  
