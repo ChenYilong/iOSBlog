@@ -1,5 +1,17 @@
 ### 防 DNS 污染方案
 
+## IM系列文章
+
+IM系列文章分为下面这几篇：
+
+ -  [《IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）》](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md) 
+ - [《技术实现细节》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/技术实现细节.md ) 
+ - [《有一种 Block 叫 Callback，有一种 Callback 做 CompletionHandler》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/有一种%20Block%20叫%20Callback，有一种%20Callback%20做%20CompletionHandler.md ) 
+ - [《防 DNS 污染方案》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/防%20DNS%20污染方案.md ) （本文）
+
+
+## 正文
+
 DNS出问题的概率其实比大家感觉的要大，首先是DNS被劫持或者失效，2015年初业内比较知名的就有 Apple 内部 DNS 问题导致 App Store、iTunes Connect 账户无法登录；京东因为 CDN 域名付费问题导致服务停摆。
 
 另一个常见问题就是 DNS 解析慢或者失败，例如国内中国运营商网络的 DNS 就很慢，一次 DNS 查询的耗时甚至都能赶上一次连接的耗时，尤其 2G 网络情况下，DNS 解析失败是很常见的。因此如果直接使用 DNS，对于首次网络服务请求耗时和整体服务成功率都有非常大的影响。

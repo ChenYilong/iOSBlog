@@ -1,5 +1,7 @@
 # IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）
 
+演讲视频（上下两部，时长将近2个半小时）以及 PPT 下载：链接: http://pan.baidu.com/s/1i5oH6LZ 密码: 4ayq
+
 2016年9月份[我](https://github.com/ChenYilong)参加了 MDCC2016（中国移动开发者大会），
 
 ![2016年9月份我参加了 MDCC2016（中国移动开发者大会）](http://ww2.sinaimg.cn/large/006tNbRwjw1f9bkx4tiuqj30qo0zk0vd.jpg)
@@ -17,6 +19,15 @@
 我现在任职于 [LeanCloud（原名 `AVOS` ）](https://leancloud.cn/?source=T6M35E4H) 。LeanCloud 是国内较早提供 IM 服务飞 Paas 厂商，提供 IM 相关的 SDK 供开发者使用，现在采纳我们 IM 方案的 APP 有：知乎Live、掌上链家、懂球帝等等，在 IM 方面也积累了一些经验，这次就在这篇博文分享下。
 
 ![采纳了我们IM方案和推送方案的APP](http://ww1.sinaimg.cn/large/006tNbRwjw1f9blvbrujhj30mb0i6tav.jpg)
+
+## IM系列文章
+
+IM 系列文章分为下面这几篇：
+
+ -  [《IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）》](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md) （本文）
+ - [《技术实现细节》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/技术实现细节.md ) 
+ - [《有一种 Block 叫 Callback，有一种 Callback 做 CompletionHandler》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/有一种%20Block%20叫%20Callback，有一种%20Callback%20做%20CompletionHandler.md ) 
+ - [《防 DNS 污染方案》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/防%20DNS%20污染方案.md ) 
 
 ## 提纲
 

@@ -1,8 +1,23 @@
 # 有一种 Block 叫 Callback，有一种 Callback 做 CompletionHandler
 
-本文是 [《IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）》](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md) 的第三篇。
+## IM系列文章
 
-主要介绍下相关的接口设计：集成 ChatKit 时，如何导入 APP 已有的用户系统。
+IM系列文章分为下面这几篇：
+
+ -  [《IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）》](https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/IM%20即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）.md) 
+ - [《技术实现细节》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/技术实现细节.md ) 
+ - [《有一种 Block 叫 Callback，有一种 Callback 做 CompletionHandler》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/有一种%20Block%20叫%20Callback，有一种%20Callback%20做%20CompletionHandler.md ) （本文）
+ - [《防 DNS 污染方案》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/防%20DNS%20污染方案.md ) 
+
+
+
+本文是第三篇。
+
+## 正文
+
+本文会以下面这种情况为切入点来探讨 Block 的种类和用法：
+
+ > 集成 ChatKit 时，如何导入 APP 已有的用户系统，
 
 我们作为开发者去集成一个 Lib （也可以叫轮子、SDK、下文统一叫 Lib）时，我们会发现我们遇到的 `Block`， 按照功能的角度划分，其实可以分为这几种：
 
@@ -137,3 +152,11 @@ typedef void(^LCCKFetchProfilesBlock)(NSArray<NSString *> *userIds, LCCKFetchPro
          !completionHandler ?: completionHandler([users copy], nil);
      }];
  ```
+
+
+
+----------
+
+Posted by [微博@iOS程序犭袁](http://weibo.com/luohanchenyilong/)  
+原创文章，版权声明：自由转载-非商用-非衍生-保持署名 | [Creative Commons BY-NC-ND 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh)
+<p align="center"><a href="http://weibo.com/u/1692391497?s=6uyXnP" target="_blank"><img border="0" src="http://service.t.sina.com.cn/widget/qmd/1692391497/b46c844b/1.png"/></a></a>
