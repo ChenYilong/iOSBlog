@@ -127,9 +127,9 @@ IM 系列文章分为下面这几篇：
 参考： [What are Long-Polling, Websockets, Server-Sent Events (SSE) and Comet?](http://stackoverflow.com/a/12855533/3395008) 
 
 
-我们可以看到，发展历史是这样：从长短轮询到长短连接，使用 WebSocket 来替代 HTTP。
+我们可以看到，发展历史是这样：从长短轮询到长连接，使用 WebSocket 来替代 HTTP。
 
-长短轮询到长短连接的区别主要有：
+其中长短轮询与长短连接的区别主要有：
 
  1. 概念范畴不同：长短轮询是应用层概念、长短连接是传输层概念
  2. 协商方式不同：一个 TCP 连接是否为长连接，是通过设置 HTTP 的 Connection Header 来决定的，而且是需要两边都设置才有效。而一种轮询方式是否为长轮询，是根据服务端的处理方式来决定的，与客户端没有关系。
@@ -227,6 +227,14 @@ LiveKit 相较社交场景的特点：
  - 自定义消息
  - 打赏机制的服务端配合
  
+有人可能有这样的疑问：
+
+![](http://ww1.sinaimg.cn/large/006tNbRwjw1f9e1zw0h1uj30ga05l3yn.jpg)
+
+（叫我Elon（读：一龙）就好了）
+
+那么可以看下 Demo 的实现：我们可以看到里面的弹幕、礼物、点赞出心这些都是 IM 系统里的自定义消息。
+
 ![](http://ww2.sinaimg.cn/large/72f96cbajw1f7q9sn89lzg20nl0l9b2a.gif)
 
 ![](http://ww2.sinaimg.cn/large/72f96cbajw1f7q9sdezf9g20nl0l9kjn.gif)
@@ -248,13 +256,15 @@ LiveKit 相较社交场景的特点：
   - 双向ping pong机制
   - iOS端只走APNs
 
-双向 ping-pong 机制：
+**双向 ping-pong 机制**：
 
 Message 在发送后，在服务端维护一个表，一段时间内，比如15秒内没有收到 ack，就认为应用处于离线状态，先将用户踢下线，然后转而进行推送。这里如果出现，重复推送，客户端要负责去重。将 Message 消息相当于服务端发送的 Ping 消息，APP 的 ack 作为 pong。
 
 ![](http://ww4.sinaimg.cn/large/006y8lVajw1f873a0br78j30ac0bsgmb.jpg)
 
-使用 APNs 来作聊天的优缺点：
+**使用 APNs 来作聊天**
+
+优缺点：
 
   优点：
   
@@ -305,7 +315,7 @@ WebSocket 是 HTML5 开始提供的一种浏览器与服务器间进行全双工
 
 ### 更多
 
-**文章较长，单独成篇。**： [《技术实现细节》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/技术实现细节.md ) 
+**技术实现细节的部分较长，单独成篇。**： [《技术实现细节》]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/基于Websocket的IM即时通讯技术/技术实现细节.md ) 
 
 
 下面是文章的第二部分：
