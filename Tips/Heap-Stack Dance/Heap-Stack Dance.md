@@ -7,6 +7,8 @@
 为 block 多加一个参数，也就是 self 所属类型的参数，那么在 block 内部，该参数就会和 `strongSelf` 的效果一致。同时你也可以不写 `weakSelf`，直接使用使用该参数（作用等同于直接使用 `strongSelf` ）。这样就达到了：“多加一个参数，省掉两行代码”的效果。原理就是利用了“参数”的特性：参数是存放在栈中的(或寄存器中)，系统负责回收，开发者无需关心。因为解决问题的思路是：将 block 会捕获变量到堆上的问题，化解为了：变量会被分配到栈(或寄存器中)上，所以我把种做法起名叫 Heap-Stack Dance 。
  
 具体用法示例如下：
+(详见仓库中的[Demo---文件夹叫做：weak-strong-drance-demo](https://github.com/ChenYilong/iOSBlog/tree/master/Tips/Heap-Stack%20Dance) )
+
 
  ```Objective-C
 
