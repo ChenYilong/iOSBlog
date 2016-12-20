@@ -187,6 +187,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
  1. [《如何使用ip直接访问https网站?》]( https://segmentfault.com/a/1190000004359232?utm_source=Weibo ) 
  2. [《HTTPS业务场景解决方案》]( https://help.aliyun.com/document_detail/30143.html ) 
+ 3. [Supporting IPv6 DNS64/NAT64 Networks](https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/UnderstandingandPreparingfortheIPv6Transition/UnderstandingandPreparingfortheIPv6Transition.html#//apple_ref/doc/uid/TP40010220-CH213-SW1) 
 
 ## IM系列文章
 
