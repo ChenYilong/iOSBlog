@@ -220,6 +220,35 @@ struct __Foo__init_block_impl_0 {
  ```
   
   
+而如果是如下代码 self 就会被捕获：
+  
+  
+ ```Objective-C
+ int tmpTarget;
+    self.completion1 = ^(Foo *foo) {
+        tmpTarget;
+        _b;
+        NSLog(@"completion1");
+    };
+    self.completion1(self);
+ ```
+
+  
+ ```Objective-C
+struct __Foo__init_block_impl_0 {
+  struct __block_impl impl;
+  struct __Foo__init_block_desc_0* Desc;
+  int tmpTarget;
+  Foo *__strong self;
+  __Foo__init_block_impl_0(void *fp, struct __Foo__init_block_desc_0 *desc, int _tmpTarget, Foo *__strong _self, int flags=0) : tmpTarget(_tmpTarget), self(_self) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+ ```
+
 ----------
 
 QQ交流群：515295083
