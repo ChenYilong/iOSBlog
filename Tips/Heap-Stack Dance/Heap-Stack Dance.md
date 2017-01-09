@@ -184,6 +184,42 @@ __weak typeof(controller) weakController = conversationController;
  
  
 
+这里还有另外一种方法来证明 self 做参数传进 block 不会被 Block 捕获：
+  
+用 clang 对 Foo.m 文件转成c/c++代码：
+    
+   > clang -rewrite-objc Foo.m -Wno-deprecated-declarations -fobjc-arc
+    
+    
+比如如下代码：
+    
+ ```Objective-C
+    int tmpTarget;
+    self.completion1 = ^(Foo *foo) {
+        tmpTarget;
+        NSLog(@"completion1");
+    };
+    self.completion1(self);
+ ```
+
+可以看到 Block 只会对传入的 `tmpTarget` 引用，`self` 不会捕获：
+
+    
+ ```C
+struct __Foo__init_block_impl_0 {
+  struct __block_impl impl;
+  struct __Foo__init_block_desc_0* Desc;
+  int tmpTarget;
+  __Foo__init_block_impl_0(void *fp, struct __Foo__init_block_desc_0 *desc, int _tmpTarget, int flags=0) : tmpTarget(_tmpTarget) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+ ```
+  
+  
 ----------
 
 QQ交流群：515295083
@@ -191,3 +227,5 @@ QQ交流群：515295083
 Posted by [微博@iOS程序犭袁](http://weibo.com/luohanchenyilong/)  
 原创文章，版权声明：自由转载-非商用-非衍生-保持署名 | [Creative Commons BY-NC-ND 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh)
 <p align="center"><a href="http://weibo.com/u/1692391497?s=6uyXnP" target="_blank"><img border="0" src="http://service.t.sina.com.cn/widget/qmd/1692391497/b46c844b/1.png"/></a></a> 
+
+
