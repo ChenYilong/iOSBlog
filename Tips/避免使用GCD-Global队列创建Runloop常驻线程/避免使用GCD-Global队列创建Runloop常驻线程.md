@@ -1,5 +1,7 @@
 # 避免使用 GCD Global队列创建Runloop常驻线程
 
+本文对应 Demo 以及 Markdown 文件在[仓库中](https://github.com/ChenYilong/iOSBlog/tree/master/Tips/避免使用GCD-Global队列创建Runloop常驻线程)，文中的错误可以提 PR 到这个文件，我会及时更改。
+
 ## GCD Global队列创建线程进行耗时操作的风险
 
 先思考下如下几个问题：
