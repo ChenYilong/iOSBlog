@@ -1,0 +1,27 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+# 指定 Master 仓库和阿里云仓库
+source 'https://github.com/CocoaPods/Specs.git'
+source 'https://github.com/aliyun/aliyun-specs.git'
+
+
+target 'CYLGCDRunloopDemo' do
+  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+  # use_frameworks!
+
+    pod 'AlicloudFeedback', '~> 3.0.1'
+
+  # Pods for CYLGCDRunloopDemo
+
+  target 'CYLGCDRunloopDemoTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'CYLGCDRunloopDemoUITests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
