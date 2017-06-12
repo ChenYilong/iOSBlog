@@ -1,3 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [避免使用 GCD Global队列创建Runloop常驻线程](#%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8-gcd-global%E9%98%9F%E5%88%97%E5%88%9B%E5%BB%BArunloop%E5%B8%B8%E9%A9%BB%E7%BA%BF%E7%A8%8B)
+  - [GCD Global队列创建线程进行耗时操作的风险](#gcd-global%E9%98%9F%E5%88%97%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E8%BF%9B%E8%A1%8C%E8%80%97%E6%97%B6%E6%93%8D%E4%BD%9C%E7%9A%84%E9%A3%8E%E9%99%A9)
+  - [避免使用 GCD Global 队列创建 Runloop 常驻线程](#%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8-gcd-global-%E9%98%9F%E5%88%97%E5%88%9B%E5%BB%BA-runloop-%E5%B8%B8%E9%A9%BB%E7%BA%BF%E7%A8%8B)
+    - [单一 Runloop 常驻线程](#%E5%8D%95%E4%B8%80-runloop-%E5%B8%B8%E9%A9%BB%E7%BA%BF%E7%A8%8B)
+    - [多个 Runloop 常驻线程](#%E5%A4%9A%E4%B8%AA-runloop-%E5%B8%B8%E9%A9%BB%E7%BA%BF%E7%A8%8B)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # 避免使用 GCD Global队列创建Runloop常驻线程
 
 本文对应 Demo 以及 Markdown 文件在[仓库中](https://github.com/ChenYilong/iOSBlog/tree/master/Tips/避免使用GCD-Global队列创建Runloop常驻线程)，文中的错误可以提 PR 到这个文件，我会及时更改。
@@ -202,7 +213,7 @@ _dispatch_queue_wakeup_global_slow(dispatch_queue_t dq, unsigned int n)
 }
 ```
 
-###多个 Runloop 常驻线程
+### 多个 Runloop 常驻线程
 
 第二种用法，我写了一个小 Demo 来模拟这种场景，
 
