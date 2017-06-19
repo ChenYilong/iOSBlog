@@ -1,8 +1,10 @@
 # iOS 常见耗电量检测方案调研
 
+
+本文对应 Demo 以及 Markdown 文件在 [ GitHub 仓库中]( https://github.com/ChenYilong/iOSBlog/blob/master/Tips/iOS常见耗电量检测方案调研/iOS常见耗电量检测方案调研.md )，文中的错误可以提 PR 到这个文件，我会及时更改。
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 
 - [前言](#%E5%89%8D%E8%A8%80)
 - [系统接口](#%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%8F%A3)

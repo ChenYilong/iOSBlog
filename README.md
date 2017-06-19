@@ -12,6 +12,7 @@
  9.  [《基于WebRTC的视频聊天技术在iOS端的实现》](https://github.com/ChenYilong/WebRTC)
  10.  [《使用 Heap-Stack Dance 替代 Weak-Strong Dance，优雅避开循环引用》](https://github.com/ChenYilong/iOSBlog/issues/4) 
  11. [《避免使用 GCD Global 队列创建 Runloop 常驻线程》](https://github.com/ChenYilong/iOSBlog/issues/9)
+ 12.  [《iOS 常见耗电量检测方案调研》]( https://github.com/ChenYilong/iOSBlog/issues/10 ) 
   
 ----------
 
