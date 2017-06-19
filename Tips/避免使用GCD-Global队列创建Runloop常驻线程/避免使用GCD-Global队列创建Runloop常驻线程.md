@@ -1,3 +1,9 @@
+# 避免使用 GCD Global队列创建Runloop常驻线程
+
+本文对应 Demo 以及 Markdown 文件在[仓库中](https://github.com/ChenYilong/iOSBlog/tree/master/Tips/避免使用GCD-Global队列创建Runloop常驻线程)，文中的错误可以提 PR 到这个文件，我会及时更改。
+
+## 目录
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
@@ -9,9 +15,6 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# 避免使用 GCD Global队列创建Runloop常驻线程
-
-本文对应 Demo 以及 Markdown 文件在[仓库中](https://github.com/ChenYilong/iOSBlog/tree/master/Tips/避免使用GCD-Global队列创建Runloop常驻线程)，文中的错误可以提 PR 到这个文件，我会及时更改。
 
 ## GCD Global队列创建线程进行耗时操作的风险
 
@@ -319,4 +322,8 @@ Demo 的这种模拟可能比较极端，但是如果你维护的是一个像 AF
 正如你所看到的，没有任何一个库会用 GCD 全局队列来创建常驻线程，而你也应该
 
  > 避免使用 GCD Global 队列来创建 Runloop 常驻线程。
+
+<!-- 最后的错误示例，如果发生在线上，如果遭遇服务端频繁不响应或超时，那么六七万日活APP，三天能有十个左右crash。150万日活APP，一周60个左右crash。 -->
+
+
 
