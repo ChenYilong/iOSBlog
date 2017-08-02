@@ -65,6 +65,8 @@
 
  ```
 
+ 注意避免执行太晚，如果在 `- (void)viewDidLoad` 中注册，可能会因为注册太晚，引发问题。建议在`+load`方法中执行。
+
 ## WKWebView 使用 NSURLProtocol 拦截请求无法获取 Cookie 信息
 
 iOS11推出了新的 API `WKHTTPCookieStore` 可以用来拦截 WKWebView 的 Cookie 信息
@@ -72,7 +74,7 @@ iOS11推出了新的 API `WKHTTPCookieStore` 可以用来拦截 WKWebView 的 Co
 用法示例如下：
 
  ```Objective-C
-  WKHTTPCookieStore *cookieStroe = self.webView.configuration.websiteDataStore.httpCookieStore;
+    WKHTTPCookieStore *cookieStroe = self.webView.configuration.websiteDataStore.httpCookieStore;
    //get cookies
     [cookieStroe getAllCookies:^(NSArray<NSHTTPCookie *> * _Nonnull cookies) {
         NSLog(@"All cookies %@",cookies);
@@ -82,7 +84,7 @@ iOS11推出了新的 API `WKHTTPCookieStore` 可以用来拦截 WKWebView 的 Co
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     dict[NSHTTPCookieName] = @"userid";
     dict[NSHTTPCookieValue] = @"123";
-    dict[NSHTTPCookieDomain] = @"koubei.com";
+    dict[NSHTTPCookieDomain] = @"xxxx.com";
     dict[NSHTTPCookiePath] = @"/";
 
     NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:dict];
@@ -96,6 +98,40 @@ iOS11推出了新的 API `WKHTTPCookieStore` 可以用来拦截 WKWebView 的 Co
     }];
  ```
 
+### 利用 WKHTTPCookieStore 解决 WKWebView 首次请求不携带 Cookie 的问题
+
+只要是存在WKHTTPCookieStore里的 cookie，WKWebView每次请求都会携带，存在 NSHTTPCookieStorage 的cookie，并不会每次都携带。于是会发生首次WKWebView请求不携带Cookie的问题。
+
+解决方法：
+
+在执行 `-[WKWebView loadReques:]` 前将 `NSHTTPCookieStorage` 中的内容复制到 `WKHTTPCookieStore` 中。示例代码如下：
+
+ ```Objective-C
+        [self copyNSHTTPCookieStorageToWKHTTPCookieStoreWithCompletionHandler:^{
+            NSURL *url = [NSURL URLWithString:@"https://www.v2ex.com"];
+            NSURLRequest *request = [NSURLRequest requestWithURL:url];
+            [_webView loadRequest:request];
+        }];
+ ```
+
+ ```Objective-C
+- (void)copyNSHTTPCookieStorageToWKHTTPCookieStoreWithCompletionHandler:(nullable void (^)())theCompletionHandler; {
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+    WKHTTPCookieStore *cookieStroe = self.webView.configuration.websiteDataStore.httpCookieStore;
+    for (NSHTTPCookie *cookie in cookies) {
+        if (cookies.count == 0) {
+            !theCompletionHandler ?: theCompletionHandler();
+            break;
+        }
+        [cookieStroe setCookie:cookie completionHandler:^{
+            if ([[cookies lastObject] isEqual:cookie]) {
+                !theCompletionHandler ?: theCompletionHandler();
+                return;
+            }
+        }];
+    }
+}
+ ```
 
 ## 参考链接
 

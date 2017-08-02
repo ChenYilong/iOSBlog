@@ -42,14 +42,12 @@ SNI（单IP多HTTPS证书）场景下，iOS上层网络库NSURLConnection/NSURLS
 另一种方法是使用 HTTPBodyStream 获取 body，并赋值到 body 中，具体的代码如下，可以解决上面提到的问题：
 
  ```Objective-C
-#pragma mark -
-#pragma mark 处理POST请求相关POST  用HTTPBodyStream来处理BODY体
-- (NSMutableURLRequest *)handlePostRequestBodyWithRequest:(NSMutableURLRequest *)request {
-    NSMutableURLRequest * req = [request mutableCopy];
-    if ([request.HTTPMethod isEqualToString:@"POST"]) {
-        if (!request.HTTPBody) {
+//处理POST请求相关POST  用HTTPBodyStream来处理BODY体
+- (void)handlePostRequestBody {
+    if ([self.HTTPMethod isEqualToString:@"POST"]) {
+        if (!self.HTTPBody) {
             uint8_t d[1024] = {0};
-            NSInputStream *stream = request.HTTPBodyStream;
+            NSInputStream *stream = self.HTTPBodyStream;
             NSMutableData *data = [[NSMutableData alloc] init];
             [stream open];
             while ([stream hasBytesAvailable]) {
@@ -58,11 +56,10 @@ SNI（单IP多HTTPS证书）场景下，iOS上层网络库NSURLConnection/NSURLS
                     [data appendBytes:(void *)d length:len];
                 }
             }
-            req.HTTPBody = [data copy];
+            self.HTTPBody = [data copy];
             [stream close];
         }
     }
-    return req;
 }
 
  ```
