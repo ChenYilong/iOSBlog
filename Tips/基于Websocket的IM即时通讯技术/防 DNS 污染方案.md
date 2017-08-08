@@ -40,7 +40,7 @@ DNS 劫持、污染一般是针对递归 DNS 服务器的 DNS 劫持攻击，
 某些地区的中国移动还有个简单粗爆的域名检查系统，包含 av 字样的域名一率返回错误的 IP，
 
 LeanCloud 之前叫做 AVOSCLoud，域名是：https://cn.avoscloud.com，嗯，我们很受伤。
-后来我们改名了，域名也切换到了 api.leancloud.cn，我们用户的 DNS 问题已经大大的减少了。
+后来我们改名了，域名也切换到了 api.leancloud.cn ，我们用户的 DNS 问题已经大大的减少了。
 
 鬼知道我们经历了什么。
 
@@ -62,7 +62,7 @@ LeanCloud 之前叫做 AVOSCLoud，域名是：https://cn.avoscloud.com，嗯，
  移动环境下，向中国移动打 10086 电话投诉，告之受影响的域名及 DNS 服务器的 IP，才能解决问题。
  如果是在无线网络情况下， DNS 异常，则请通过路由器的 DHCP 设置，将默认的 DNS 修改为正常的 DNS（推荐 114.114.114.114），并重启路由器即可。
 
-投诉到中国移动后 48 小时问题仍未解决的话，依据中国相关法律法规规定，可以向工信部申诉，网址是 http://www.chinatcc.gov.cn:8080/cms/shensus/，这里最好是以邮件的方式申诉，将具体细节和截图写在邮件里发送给 accept@chinatcc.gov.cn，工信部的相关同学最早会在第 2 天回电话并催促中国移动。
+投诉到中国移动后 48 小时问题仍未解决的话，依据中国相关法律法规规定，可以向工信部申诉，网址是 http://www.chinatcc.gov.cn:8080/cms/shensus/ ，这里最好是以邮件的方式申诉，将具体细节和截图写在邮件里发送给 accept@chinatcc.gov.cn，工信部的相关同学最早会在第 2 天回电话并催促中国移动。
 
 申诉邮件的内容需要包括两个部分:
 一是申诉者的姓名、身份证号码、通信地址、邮编、联系电话、申诉涉及到的电话号码、电子邮件、申诉日期 
@@ -82,19 +82,21 @@ IP或域名在到达服务器前，经历了两个步骤往往会被我们所忽
 
 ![](http://ww2.sinaimg.cn/large/801b780ajw1f88e1wjs95j20i70afdgw.jpg)
 
-如果你拿一个IPv4的IP或域名进行请求，有两个机制可以保证最终到达 Server 的是一个IPv6地址。
+如果你拿一个 IPv4 的 IP 或域名进行请求，在 IPv6-Only 环境下，有两个机制可以保证最终能够到达 Server 地址。
 
-第一个机制是绿色部分，指的是 iOS系统级别的 IPv4 兼容方案，只要你使用了 `NSURLSession` 或 `CFNetwork`， 那么iOS系统会将帮你把它转为IPv6地址。
+第一个机制是绿色部分，指的是 iOS系统级别的 IPv4 兼容方案，只要你使用了 `NSURLSession` 或 `CFNetwork`， 那么 iOS 系统会将帮你把它转为 IPv6 地址。
 
  > NSURLSession and CFNetwork automatically synthesize IPv6 addresses from IPv4 literals locally on devices operating on DNS64/NAT64 networks.（如果当前网络是 IPv6 网络，那么会在iOS系统层面转换成 IPv6.）
 
- 第二个机制是 DNS 服务的兼容方案，可以是运营商提供的服务，也可以是第三方 DNS 解析机构比如 DNSPod。如果 DNS 解析出来的域名是 IPv4 地址，也会转为 IPv6 地址。
+ 第二个机制是 DNS 服务的兼容方案，可以是运营商提供的服务，也可以是第三方 DNS 解析机构比如 DNSPod。如果 DNS 解析出来的域名是 IPv4 地址，也会转为 IPv6 兼容的地址。DNS64/NAT64 起到的作用就是将网关的出口地址进行转换，映射到 IPv4 地址上，保证路由能寻址到 IPv4 的地址。
 
 综上所述，IPv6 政策的应对方案可以有下面几种：
 
  1. 使用高层API，比如 `NSURLSession` and `CFNetwork`。
  2. 升级服务器，让服务端支持 IPv6。在 APP 中替换 IPv4 的地址。
  3. 如果你的 APP 需要使用了更底层的 API 连接到仅支持 IPv4 的服务器，且不使用 DNS 域名解析，请在APP端使用 `getaddrinfo` 处理 IPv4 地址串( `getaddrinfo` 可通过传入一个IPv4或IPv6地址，得到一个 sockaddr 结构链表)。如果当前的网络接口不支持 IPv4，仅支持 IPv6，NAT64和DNS64，这样做可以得到一个合成的IPv6地址。
+
+就目前国内的情况来看，据大部分的服务端器是不支持IPv6的，最后一种方法更加适用。这样一来，服务端完全不用做更改，在服务端看来，客户端是能够正常连接到 IPv4 的地址的。
 
 参考：[《iOS支持IPv6 DNS64/NAT64网络》]( http://www.pchou.info/ios/2016/06/05/ios-supporting-ipv6.html ) 
 
@@ -207,3 +209,4 @@ IM系列文章分为下面这几篇：
 Posted by [微博@iOS程序犭袁](http://weibo.com/luohanchenyilong/)  
 原创文章，版权声明：自由转载-非商用-非衍生-保持署名 | [Creative Commons BY-NC-ND 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh)
 <p align="center"><a href="http://weibo.com/u/1692391497?s=6uyXnP" target="_blank"><img border="0" src="http://service.t.sina.com.cn/widget/qmd/1692391497/b46c844b/1.png"/></a></a>
+
