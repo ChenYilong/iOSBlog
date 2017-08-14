@@ -45,7 +45,9 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 }
 ```
 
-以上逻辑会造成冻屏，测试时可以伴随前后台切换，crash几率增大。
+以上逻辑用真机测试会有卡死的几率，并非每次都会发生，但多尝试几次就会复现，伴随前后台切换，crash几率增大。
+
+
 
 下面做一下分析：
 
@@ -288,14 +290,19 @@ _dispatch_queue_wakeup_global_slow(dispatch_queue_t dq, unsigned int n)
     }
 ```
 
-
-测试时可以伴随前后台切换，crash几率更大。
+以上逻辑用真机测试会有卡死的几率，并非每次都会发生，但多尝试几次就会复现，伴随前后台切换，crash几率增大。
  
 其中我们采用了 GCD 全局队列的方式来创建常驻线程，因为在创建时可能已经出现了全局队列的线程池满了的情况，所以 GCD 派发的任务，无法执行，而且我们把超时检测的逻辑放进了这个任务中，所以导致的情况就是，有很多任务的超时检测功能失效了。此时就只能依赖于服务端响应来结束该任务（服务端响应能结束该任务的逻辑在 Demo 中未给出），但是如果再加之服务端不响应，那么任务就永远不会结束。后续的网络请求也会就此 block 住，造成 crash。
 
 如果我们把 GCD 全局队列换成 NSThread 的方式，那么就可以保证每次都会创建新的线程。
 
+
+注意：文章中只演示的是超时 cancel runloop 的操作，实际项目中一定有其他主动 cancel runloop 的操作，就比如网络请求成功或失败后需要进行cancel操作。代码中没有展示网络请求成功或失败后的 cancel 操作。
+
+
 Demo 的这种模拟可能比较极端，但是如果你维护的是一个像 AFNetworking 这样的一个网络库，你会放心把创建常驻线程这样的操作交给 GCD 全局队列吗？因为整个 APP 是在共享一个全局队列的线程池，那么如果 APP 把线程池沾满了，甚至线程池长时间占满且不结束，那么 AFNetworking 就自然不能再执行任务了，所以我们看到，即使是只会创建一条常驻线程， AFNetworking 依然采用了 NSThread 的方式而非  GCD 全局队列这种方式。
+
+注释：以下方法存在于老版本[AFN 2.x](https://github.com/AFNetworking/AFNetworking/tree/2.x) 中。
 
 
 ```objective-c
