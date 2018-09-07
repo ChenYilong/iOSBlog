@@ -1,6 +1,6 @@
 # IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）
 
-演讲视频（上下两部，时长将近2个半小时）以及 PPT 下载：链接: http://pan.baidu.com/s/1i5oH6LZ 密码: 4ayq
+演讲视频（上下两部，时长将近2个半小时）以及 PPT 下载：链接: https://pan.baidu.com/s/1FfhxcRImvwL7w38ZXnnzaw 密码: hb1y
 
 2016年9月份[我](https://github.com/ChenYilong)参加了 MDCC2016（中国移动开发者大会），
 
