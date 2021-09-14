@@ -1,8 +1,8 @@
 # IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（iOS视角）
 
-演讲视频（上下两部，时长将近2个半小时）以及 PPT 下载：链接: https://pan.baidu.com/s/1FfhxcRImvwL7w38ZXnnzaw 密码: hb1y
-
-油管在线观看  [《IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（ iOS 视角）（附 PPT 与 2 个半小时视频）》]( https://youtu.be/yIOlzzA_dRQ "") 
+- 文章备份地址: [《IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（ iOS 视角）（附 PPT 与 2 个半小时视频）》]( https://www.jianshu.com/p/8cd908148f9e )  (防止图床挂了)
+- 演讲视频（上下两部，时长将近2个半小时）以及 PPT 下载：链接: https://pan.baidu.com/s/1FfhxcRImvwL7w38ZXnnzaw 密码: hb1y
+- 油管在线观看  [《IM 即时通讯技术在多应用场景下的技术实现，以及性能调优（ iOS 视角）（附 PPT 与 2 个半小时视频）》]( https://youtu.be/yIOlzzA_dRQ "") 
 
 
 2016年9月份[我](https://github.com/ChenYilong)参加了 MDCC2016（中国移动开发者大会），
