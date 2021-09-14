@@ -282,7 +282,7 @@ Message 在发送后，在服务端维护一个表，一段时间内，比如15�
 
 你可能见过这种推送消息：
 
-![enter image description here](http://i67.tinypic.com/5cfuao.jpg)
+![enter image description here](https://i.loli.net/2021/09/14/dUuSyeBcf2VLtz9.png)
 
 这中间发生了什么？
 
